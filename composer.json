@@ -1,0 +1,47 @@
+{
+  "name": "mollsoft/laravel-tron-module",
+  "description": "Laravel Tron Module",
+  "homepage": "https://github.com/mollsoft/laravel-tron-module",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "MollSoft",
+      "email": "info@mollsoft.com"
+    }
+  ],
+  "keywords": [
+    "mollsoft",
+    "laravel",
+    "tron"
+  ],
+  "require": {
+    "php": "^8.2",
+    "ext-gmp": "*",
+    "ext-decimal": "*",
+    "illuminate/contracts": "^10.0",
+    "spatie/laravel-package-tools": "^1.15",
+    "furqansiddiqui/bip39-mnemonic-php": "^0.1.7",
+    "minter/minter-php-bip-44": "^1.2",
+    "web3p/web3.php": "^0.1.6",
+    "kornrunner/secp256k1": "^0.2.0",
+    "simplito/elliptic-php": "^1.0",
+    "ext-ctype": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Mollsoft\\LaravelTronModule\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Mollsoft\\LaravelTronModule\\TronServiceProvider"
+      ],
+      "aliases": {
+        "Tron": "Mollsoft\\LaravelTronModule\\Facades\\Tron"
+      }
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
