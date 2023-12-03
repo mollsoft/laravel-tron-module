@@ -277,6 +277,6 @@ class EmptyWebhookHandler implements WebhookHandlerInterface
 
 The following versions of PHP are supported by this version.
 
-* PHP 8.1 and older
+* PHP 8.2 and older
 * PHP Extensions: Decimal, GMP, BCMath, CType.
 * Laravel Queues
