@@ -8,7 +8,7 @@ use Mollsoft\LaravelTronModule\Commands\CreateNewTRC20Command;
 use Mollsoft\LaravelTronModule\Commands\CreateNewWalletCommand;
 use Mollsoft\LaravelTronModule\Commands\GenerateAddressCommand;
 use Mollsoft\LaravelTronModule\Commands\ImportAddressCommand;
-use Mollsoft\LaravelTronModule\Commands\TronScanCommand;
+use Mollsoft\LaravelTronModule\Commands\TronSyncCommand;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -32,7 +32,7 @@ class TronServiceProvider extends PackageServiceProvider
                 GenerateAddressCommand::class,
                 ImportAddressCommand::class,
                 CreateNewTRC20Command::class,
-                TronScanCommand::class,
+                TronSyncCommand::class,
             )
             ->hasInstallCommand(function(InstallCommand $command) {
                 $command

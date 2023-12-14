@@ -9,14 +9,19 @@ return new class extends Migration {
     {
         Schema::create('tron_wallets', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('title')->nullable();
+            $table->string('name')
+                ->unique();
+            $table->string('title')
+                ->nullable();
             $table->text('password');
             $table->text('mnemonic');
             $table->text('seed');
-            $table->timestamp('sync_at')->nullable();
-            $table->decimal('balance', 20, 6)->nullable();
-            $table->json('trc20')->nullable();
+            $table->timestamp('sync_at')
+                ->nullable();
+            $table->decimal('balance', 20, 6)
+                ->nullable();
+            $table->json('trc20')
+                ->nullable();
             $table->timestamps();
         });
     }

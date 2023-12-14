@@ -55,8 +55,7 @@ $password = 'password for encrypt mnemonic, seed and private keys';
 $mnemonic = 'record jelly ladder exotic hold access test minute target fortune duck disease express damp attend';
 $mnemonicPassphrase = null;
 
-$tronWallet = Tron::createWallet($name, $password, $mnemonic, $mnemonicPassphrase);
-$tronWallet->save();
+$wallet = Tron::createWallet($name, $password, $mnemonic, $mnemonicPassphrase);
 ```
 
 Unlock HD Wallet:
@@ -77,7 +76,6 @@ $tronWallet->encrypted()->unlock($password);
 
 $index = 0; // Address index (if null - automatic)
 $tronAddress = Tron::createAddress($tronWallet, $index);
-$tronAddress->save();
 
 echo $tronAddress->address; // Print Address
 echo $tronAddress->private_key; // Print private key
@@ -237,7 +235,7 @@ Register Service Provider and Facade in app, edit `config/app.php`:
 
 In file `app/Console/Kernel` in method `schedule(Schedule $schedule)` add
 ```
-$schedule->command('tron:scan')
+$schedule->command('tron:sync')
     ->everyMinute()
     ->runInBackground();
 ```
@@ -252,7 +250,7 @@ TRONGRID_API_KEY="..."
 Scan transactions and update balances:
 
 ```bash
-> php artisan tron:scan
+> php artisan tron:sync
 ```
 
 Create TRC-20 Token:

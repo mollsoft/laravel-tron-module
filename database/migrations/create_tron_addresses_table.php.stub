@@ -14,16 +14,26 @@ return new class extends Migration {
                 ->constrained('tron_wallets')
                 ->cascadeOnDelete();
             $table->string('address');
-            $table->string('title')->nullable();
-            $table->boolean('watch_only')->nullable();
-            $table->text('private_key')->nullable();
-            $table->unsignedInteger('index')->nullable();
-            $table->timestamp('sync_at')->nullable();
-            $table->boolean('activated')->nullable();
-            $table->decimal('balance', 20, 6)->nullable();
-            $table->json('trc20')->default('[]');
-            $table->json('account')->nullable();
-            $table->json('account_resources')->nullable();
+            $table->string('title')
+                ->nullable();
+            $table->boolean('watch_only')
+                ->nullable();
+            $table->text('private_key')
+                ->nullable();
+            $table->unsignedInteger('index')
+                ->nullable();
+            $table->timestamp('sync_at')
+                ->nullable();
+            $table->boolean('activated')
+                ->nullable();
+            $table->decimal('balance', 20, 6)
+                ->nullable();
+            $table->json('trc20')
+                ->default('[]');
+            $table->json('account')
+                ->nullable();
+            $table->json('account_resources')
+                ->nullable();
             $table->timestamps();
 
             $table->unique(['wallet_id', 'index']);

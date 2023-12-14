@@ -13,9 +13,9 @@ use Mollsoft\LaravelTronModule\Support\Key;
 trait Address
 {
     /*
-     * Create Tron Address (without save in Database)
+     * Create Tron Address
      */
-    public function createAddress(TronWallet $wallet, int $index = null): TronAddress
+    public function createAddress(TronWallet $wallet, string $title = null, int $index = null): TronAddress
     {
         if (!$wallet->encrypted()->isUnlocked()) {
             throw new WalletLocked();
@@ -33,12 +33,13 @@ trait Address
 
         $address = AddressHelper::toBase58('41'.Key::privateKeyToAddress($privateKey));
 
-        /** @var class-string<TronAddress> $addressModel */
-        $addressModel = config('tron.models.address');
+        /** @var class-string<TronAddress> $model */
+        $model = config('tron.models.address');
 
-        return new $addressModel([
+        return $model::create([
             'wallet_id' => $wallet->id,
             'address' => $address,
+            'title' => $title,
             'index' => $index,
             'private_key' => $wallet->encrypted()->encode($privateKey),
         ]);

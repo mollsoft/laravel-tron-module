@@ -6,9 +6,9 @@ use Illuminate\Console\Command;
 use Mollsoft\LaravelTronModule\Jobs\SyncWalletJob;
 use Mollsoft\LaravelTronModule\Models\TronWallet;
 
-class TronScanCommand extends Command
+class TronSyncCommand extends Command
 {
-    protected $signature = 'tron:scan';
+    protected $signature = 'tron:sync';
 
     protected $description = 'Start wallets synchronization';
 

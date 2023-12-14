@@ -11,14 +11,17 @@ return new class extends Migration {
     {
         Schema::create('tron_transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('txid')->index();
-            $table->string('address')->index();
+            $table->string('txid')
+                ->index();
+            $table->string('address')
+                ->index();
             $table->enum('type', array_column(TronTransactionType::cases(), 'value'));
             $table->timestamp('time_at');
             $table->string('from');
             $table->string('to');
             $table->decimal('amount', 20, 6);
-            $table->string('trc20_contract_address')->nullable();
+            $table->string('trc20_contract_address')
+                ->nullable();
             $table->json('debug_data');
 
             $table->unique(['txid', 'address']);

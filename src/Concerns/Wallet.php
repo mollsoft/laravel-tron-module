@@ -22,16 +22,18 @@ trait Wallet
 
         $seed = Tron::mnemonicSeed($mnemonic, $passphrase);
 
-        /** @var class-string<TronWallet> $walletModel */
-        $walletModel = config('tron.models.wallet');
+        /** @var class-string<TronWallet> $model */
+        $model = config('tron.models.wallet');
 
-        $wallet = new $walletModel([
+        $wallet = new $model([
             'name' => $name,
             'mnemonic' => implode(" ", $mnemonic),
             'seed' => $seed
         ]);
         $wallet->encrypted()->encrypt($password);
         $wallet->save();
+
+        $this->createAddress($wallet, 'Primary Address', 0);
 
         return $wallet;
     }
