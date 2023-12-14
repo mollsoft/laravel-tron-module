@@ -5,6 +5,7 @@ namespace Mollsoft\LaravelTronModule\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Mollsoft\LaravelTronModule\Casts\DecimalCast;
 use Mollsoft\LaravelTronModule\Facades\Tron;
 
@@ -60,5 +61,13 @@ class TronAddress extends Model
                 'balance' => $this->trc20[$trc20->address] ?? null,
             ])
         );
+    }
+
+    public function transactions(): HasMany
+    {
+        /** @var class-string<TronTransaction> $model */
+        $model = config('tron.models.transaction');
+
+        return $this->hasMany($model, 'address', 'address');
     }
 }

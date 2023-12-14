@@ -33,5 +33,6 @@ return [
         'wallet' => \Mollsoft\LaravelTronModule\Models\TronWallet::class,
         'address' => \Mollsoft\LaravelTronModule\Models\TronAddress::class,
         'trc20' => \Mollsoft\LaravelTronModule\Models\TronTRC20::class,
+        'transaction' => \Mollsoft\LaravelTronModule\Models\TronTransaction::class,
     ]
 ];

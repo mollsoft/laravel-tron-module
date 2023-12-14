@@ -206,17 +206,40 @@ $addressHex = '11234....412412';
 $addressBase58 = AddressHelper::toBase58($addressHex);
 ```
 
-## Install
-
+## Installation
+You can install the package via composer:
 ```bash
-> composer require mollsoft/laravel-tron-module
-> php artisan vendor:publish --tag=tron-config
-> php artisan migrate
+composer require mollsoft/laravel-tron-module
 ```
 
-In file `app/Console/Kernel` in method `schedule(Schedule $schedule)` add 
+After you can run installer using command:
+```bash
+php artisan tron:install
 ```
-$schedule->command('tron:scan')->everyMinute();
+
+And run migrations:
+```bash
+php artisan migrate
+```
+
+Register Service Provider and Facade in app, edit `config/app.php`:
+```php
+'providers' => ServiceProvider::defaultProviders()->merge([
+    ...,
+    \Mollsoft\LaravelTronModule\TronServiceProvider::class,
+])->toArray(),
+
+'aliases' => Facade::defaultAliases()->merge([
+    ...,
+    'Tron' => \Mollsoft\LaravelTronModule\Facades\Tron::class,
+])->toArray(),
+```
+
+In file `app/Console/Kernel` in method `schedule(Schedule $schedule)` add
+```
+$schedule->command('tron:scan')
+    ->everyMinute()
+    ->runInBackground();
 ```
 
 In .env file add:

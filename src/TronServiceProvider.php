@@ -9,6 +9,7 @@ use Mollsoft\LaravelTronModule\Commands\CreateNewWalletCommand;
 use Mollsoft\LaravelTronModule\Commands\GenerateAddressCommand;
 use Mollsoft\LaravelTronModule\Commands\ImportAddressCommand;
 use Mollsoft\LaravelTronModule\Commands\TronScanCommand;
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -20,10 +21,10 @@ class TronServiceProvider extends PackageServiceProvider
             ->name('tron')
             ->hasConfigFile()
             ->hasMigrations([
-                '2023_01_01_00001_create_tron_wallets_table',
-                '2023_01_01_00002_create_tron_trc20_table',
-                '2023_01_01_00003_create_tron_addresses_table',
-                '2023_01_01_00004_create_tron_transactions_table'
+                'create_tron_wallets_table',
+                'create_tron_trc20_table',
+                'create_tron_addresses_table',
+                'create_tron_transactions_table'
             ])
             ->runsMigrations()
             ->hasCommands(
@@ -32,7 +33,12 @@ class TronServiceProvider extends PackageServiceProvider
                 ImportAddressCommand::class,
                 CreateNewTRC20Command::class,
                 TronScanCommand::class,
-            );
+            )
+            ->hasInstallCommand(function(InstallCommand $command) {
+                $command
+                    ->publishConfigFile()
+                    ->publishMigrations();
+            });
 
         $this->app->singleton(Api::class, function () {
             $fullNode = new HttpProvider(config('tron.full_node'), [
