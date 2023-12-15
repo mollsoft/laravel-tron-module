@@ -6,9 +6,6 @@ use FurqanSiddiqui\BIP39\BIP39;
 
 trait Mnemonic
 {
-    /*
-     * Generate Mnemonic Phrase
-     */
     public function mnemonicGenerate(int $wordCount = 15): array
     {
         $mnemonic = BIP39::Generate($wordCount);
@@ -16,9 +13,6 @@ trait Mnemonic
         return $mnemonic->words;
     }
 
-    /*
-     * Validate Mnemonic Phrase
-     */
     public function mnemonicValidate(string|array $mnemonic): bool
     {
         if (!is_array($mnemonic)) {
@@ -34,9 +28,6 @@ trait Mnemonic
         return true;
     }
 
-    /*
-     * Get Mnemonic Seed
-     */
     public function mnemonicSeed(string|array $mnemonic, string $passphrase = null): string
     {
         if (!is_array($mnemonic)) {

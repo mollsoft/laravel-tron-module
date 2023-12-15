@@ -22,6 +22,8 @@ return new class extends Migration {
             $table->decimal('amount', 20, 6);
             $table->string('trc20_contract_address')
                 ->nullable();
+            $table->unsignedBigInteger('block_number')
+                ->nullable();
             $table->json('debug_data');
 
             $table->unique(['txid', 'address']);

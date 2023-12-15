@@ -4,6 +4,7 @@ namespace Mollsoft\LaravelTronModule\Commands;
 
 use Illuminate\Console\Command;
 use Mollsoft\LaravelTronModule\Facades\Tron;
+use Mollsoft\LaravelTronModule\Models\TronNode;
 use Mollsoft\LaravelTronModule\Models\TronWallet;
 
 class ImportAddressCommand extends Command
@@ -30,7 +31,9 @@ class ImportAddressCommand extends Command
         do {
             $error = false;
             $address = $this->ask('Please, enter watch-only address '.$walletName);
-            if (!Tron::api()->validateAddress($address, $message)) {
+
+            $node = TronNode::firstOrFail();
+            if (!$node->api()->validateAddress($address, $message)) {
                 $this->error($message);
                 $error = true;
             }

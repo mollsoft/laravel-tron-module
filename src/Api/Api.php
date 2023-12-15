@@ -135,7 +135,16 @@ class Api
             throw new \Exception('Transaction '.$txid.' not found');
         }
 
-        return TransferDTO::fromArray($data);
+        return TransferDTO::fromArray($data, true);
+    }
+
+    public function getTransferBlockNumber(string $txid): mixed
+    {
+        $data = $this->manager->request('wallet/gettransactioninfobyid', [
+            'value' => $txid,
+        ]);
+
+        return $data['blockNumber'] ?? null;
     }
 
     public function transfer(string $from, string $to, string|int|float|Decimal $amount): Transfer

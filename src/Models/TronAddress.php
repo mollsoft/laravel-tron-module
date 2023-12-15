@@ -24,6 +24,7 @@ class TronAddress extends Model
         'trc20',
         'account',
         'account_resources',
+        'touch_at',
     ];
 
     protected $appends = [
@@ -43,14 +44,15 @@ class TronAddress extends Model
         'trc20' => 'json',
         'account' => 'json',
         'account_resources' => 'json',
+        'touch_at' => 'datetime',
     ];
 
     public function wallet(): BelongsTo
     {
-        /** @var class-string<TronWallet> $walletModel */
-        $walletModel = config('tron.models.wallet');
+        /** @var class-string<TronWallet> $model */
+        $model = config('tron.models.wallet');
 
-        return $this->belongsTo($walletModel, 'wallet_id', 'id');
+        return $this->belongsTo($model, 'wallet_id');
     }
 
     protected function trc20Balances(): Attribute

@@ -4,9 +4,10 @@ namespace Mollsoft\LaravelTronModule\Commands;
 
 use Illuminate\Console\Command;
 use Mollsoft\LaravelTronModule\Facades\Tron;
+use Mollsoft\LaravelTronModule\Models\TronNode;
 use Mollsoft\LaravelTronModule\Models\TronWallet;
 
-class CreateNewWalletCommand extends Command
+class NewWalletCommand extends Command
 {
     protected $signature = 'tron:new-wallet';
 
@@ -15,6 +16,15 @@ class CreateNewWalletCommand extends Command
     public function handle(): void
     {
         $this->info('You are about to create a new Tron Wallet');
+
+        $nodes = TronNode::get();
+        if ($nodes->count() === 0) {
+            $this->alert("The list of nodes is empty, first create a node.");
+            return;
+        }
+
+        $nodeName = $this->choice('Choice wallet', $nodes->map(fn(TronNode $node) => $node->name)->all());
+        $node = TronNode::whereName($nodeName)->firstOrFail();
 
         do {
             $error = false;
@@ -32,15 +42,6 @@ class CreateNewWalletCommand extends Command
 
         do {
             $error = false;
-            $password = $this->ask('Please, enter wallet password');
-            if (empty($password)) {
-                $error = true;
-                $this->error('Password is required!');
-            }
-        } while ($error);
-
-        do {
-            $error = false;
             $mnemonic = $this->ask('Please, enter mnemonic phrase (optional)');
             if (!empty($mnemonic) && !Tron::mnemonicValidate($mnemonic)) {
                 $error = true;
@@ -52,7 +53,7 @@ class CreateNewWalletCommand extends Command
             $mnemonic = implode(' ', Tron::mnemonicGenerate());
         }
 
-        $wallet = Tron::createWallet($name, $password, $mnemonic);
+        $wallet = Tron::createWallet($node, $name, $mnemonic);
         $wallet->save();
 
         $this->info('Tron Wallet #'.$wallet->id.' successfully created!');

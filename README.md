@@ -25,184 +25,14 @@
 
 You can contact me for help in integrating payment acceptance into your project.
 
-## Examples
+## Requirements
 
-BIP39: Generate Mnemonic Phrase:
-```php
-$mnemonic = Tron::mnemonicGenerate(15);
-print_r($mnemonic); // string[] length 15 words
-```
+The following versions of PHP are supported by this version.
 
-BIP39: Validate Mnemonic Phrase:
-```php
-$mnemonic = 'record jelly ladder exotic hold access test minute target fortune duck disease express damp attend';
-$isValid = Tron::mnemonicValidate($mnemonic);
-echo $isValid ? 'OK' : 'ERROR';
-```
+* PHP 8.2 and older
+* PHP Extensions: Decimal, GMP, BCMath, CType.
+* Laravel Queues
 
-BIP39: Get seed by Mnemonic Phrase:
-```php
-$mnemonic = 'record jelly ladder exotic hold access test minute target fortune duck disease express damp attend';
-$mnemonicPassphrase = 'passphrase string';
-$seed = Tron::mnemonicSeed($mnemonic, $mnemonicPassphrase);
-echo $seed; // Seed in hex format
-```
-
-Create HD Wallet:
-```php
-$name = 'my-wallet';
-$password = 'password for encrypt mnemonic, seed and private keys';
-$mnemonic = 'record jelly ladder exotic hold access test minute target fortune duck disease express damp attend';
-$mnemonicPassphrase = null;
-
-$wallet = Tron::createWallet($name, $password, $mnemonic, $mnemonicPassphrase);
-```
-
-Unlock HD Wallet:
-```php
-$password = 'password for encrypt mnemonic, seed and private keys';
-
-$tronWallet = TronWallet::first();
-$isUnlocked = $tronWallet->encrypted()->unlock($password);
-echo $isUnlocked ? 'WALLET UNLOCKED' : 'INCORRECT PASSWORD';
-
-echo $tronWallet->plainMnemonic; // Print mnemonic phrase
-```
-
-Generate Address:
-```php
-$tronWallet = TronWallet::first();
-$tronWallet->encrypted()->unlock($password);
-
-$index = 0; // Address index (if null - automatic)
-$tronAddress = Tron::createAddress($tronWallet, $index);
-
-echo $tronAddress->address; // Print Address
-echo $tronAddress->private_key; // Print private key
-```
-
-Import watch-only address:
-```php
-$wallet = TronWallet::first();
-$address = Tron::importAddress($wallet, 'my tron address');
-$address->save();
-```
-
-Add TRC-20 token for tracking:
-```php
-$contractAddress = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'; // Contract Address Tether USDT
-$tronTRC20 = Tron::createTRC20($contractAddress);
-$tronTRC20->save();
-
-$balanceOfAddress = 'THPvaUhoh2Qn2y9THCZML3H815hhFhn5YC';
-echo $tronTRC20->contract()->balanceOf($balanceOfAddress); // Get TRC-20 Token balance of address
-```
-
-Get Address info (balances + resources):
-```php
-$address = 'THPvaUhoh2Qn2y9THCZML3H815hhFhn5YC';
-
-$getAccount = Tron::api()->getAccount($address);
-print_r($getAccount->toArray());
-
-$getAccountResources = Tron::api()->getAccountResources($address);
-print_r($getAccountResources->toArray());
-```
-
-Validate Address:
-```php
-$address = 'THPvaUhoh2Qn2y9THCZML3H815hhFhn5YC';
-
-$isValid = Tron::api()->validateAddress($address); // bool
-```
-
-Get Address Transfers (only TRX):
-```php
-$address = 'THPvaUhoh2Qn2y9THCZML3H815hhFhn5YC';
-
-$transfers = Tron::api()->getTransfers($address)->limit(200);
-
-foreach( $transfers as $transfer ) {
-    print_r($transfer->toArray());
-}
-```
-
-Get Address TRC-20 Transfers:
-```php
-$address = 'THPvaUhoh2Qn2y9THCZML3H815hhFhn5YC';
-
-$transfers = Tron::api()->getTRC20Transfers($address)->limit(200);
-
-foreach( $transfers as $transfer ) {
-    print_r($transfer->toArray());
-}
-```
-
-Get Transaction Info:
-```php
-$txid = '...';
-$info = Tron::api()->getTransactionInfo($txid);
-print_r($info->toArray());
-```
-
-Create TRX transfer, preview and send:
-```php
-$from = 'THPvaUhoh2Qn2y9THCZML3H815hhFhn5YC';
-$to = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
-$amount = 1;
-
-$walletPassword = 'here wallet password';
-$wallet = TronWallet::first();
-$wallet->encrypted()->unlock($walletPassword);
-
-$address = $wallet->addresses->first();
-$privateKey = $wallet->encrypted()->decode($address->private_key);
-
-$transfer = Tron::api()->transfer($from, $to, $amount);
-$preview = $transfer->preview();
-print_r($preview->toArray());
-
-$send = $transfer->send($privateKey);
-print_r($send->toArray());
-```
-
-Create TRC-20 transfer, preview and send:
-```php
-$contractAddress = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
-$from = 'THPvaUhoh2Qn2y9THCZML3H815hhFhn5YC';
-$to = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
-$amount = 1;
-
-$walletPassword = 'here wallet password';
-$wallet = TronWallet::first();
-$wallet->encrypted()->unlock($walletPassword);
-
-$address = $wallet->addresses->first();
-$privateKey = $wallet->encrypted()->decode($address->private_key);
-
-$transfer = Tron::api()->transferTRC20($contractAddress, $from, $to, $amount);
-$preview = $transfer->preview();
-print_r($preview->toArray());
-
-$send = $transfer->send($privateKey);
-print_r($send->toArray());
-```
-
-## Helpers
-
-Convert Base58 address to Hex:
-
-```php
-$addressBase58 = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
-$addressHex = AddressHelper::toHex($addressBase58);
-```
-
-Convert Hex address to Base58:
-
-```php
-$addressHex = '11234....412412';
-$addressBase58 = AddressHelper::toBase58($addressHex);
-```
 
 ## Installation
 You can install the package via composer:
@@ -240,64 +70,51 @@ $schedule->command('tron:sync')
     ->runInBackground();
 ```
 
-In .env file add:
-```
-TRONGRID_API_KEY="..."
-```
-
 ## Commands
 
-Scan transactions and update balances:
-
+Synchronizing everything
 ```bash
-> php artisan tron:sync
+php artisan tron:sync
 ```
 
-Create TRC-20 Token:
-
+Node synchronization
 ```bash
-> php artisan tron:new-trc20
+php artisan tron:sync-node NODE_ID
 ```
 
-Create Wallet:
-
+Wallet synchronization
 ```bash
-> php artisan tron:new-wallet
+php artisan tron:sync-wallet WALLET_ID
 ```
 
-Generate Address:
-
+Address synchronization
 ```bash
-> php artisan tron:generate-address
+php artisan tron:sync-address ADDRESS_ID
 ```
 
-## WebHook
-
-You can set up a WebHook that will be called when a new incoming or outgoing TRX/TRC-20 transfer is detected.
-
-In file config/tron.php you can set param:
-
-```php
-'webhook_handler' => \Mollsoft\LaravelTronModule\Handlers\EmptyWebhookHandler::class,
+Create Tron Node. Before you need register account in https://trongrid.io and generate API Key.
+```bash
+php artisan tron:new-node
 ```
 
-Example WebHook handler:
+Create Tron Wallet.
+```bash
+php artisan tron:new-wallet
+```
 
-```php
-class EmptyWebhookHandler implements WebhookHandlerInterface
-{
-    public function handle(TronAddress $address, TronTransaction $transaction): void
-    {
-        Log::error('NEW TRANSACTION FOR ADDRESS '.$address->id.' = '.$transaction->txid);
-    }
-}
+Generate Tron Address.
+```bash
+php artisan tron:new-address
+```
+
+Import watch only address.
+```bash
+php artisan tron:import-address
+```
+
+Create TRC-20 Token
+```bash
+php artisan tron:new-trc20
 ```
 
 
-## Requirements
-
-The following versions of PHP are supported by this version.
-
-* PHP 8.2 and older
-* PHP Extensions: Decimal, GMP, BCMath, CType.
-* Laravel Queues

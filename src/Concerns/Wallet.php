@@ -3,37 +3,34 @@
 namespace Mollsoft\LaravelTronModule\Concerns;
 
 use Mollsoft\LaravelTronModule\Facades\Tron;
+use Mollsoft\LaravelTronModule\Models\TronNode;
 use Mollsoft\LaravelTronModule\Models\TronWallet;
 
 trait Wallet
 {
-    /*
-     * Create Tron Wallet (without saving in Database)
-     */
     public function createWallet(
+        TronNode $node,
         string $name,
-        string $password,
-        string|array $mnemonic,
+        string|array|int|null $mnemonic = null,
         string $passphrase = null
     ): TronWallet {
-        if (!is_array($mnemonic)) {
+        if (is_string($mnemonic)) {
             $mnemonic = explode(' ', $mnemonic);
+        } elseif (is_null($mnemonic) || is_int($mnemonic)) {
+            $mnemonic = Tron::mnemonicGenerate($mnemonic);
         }
 
         $seed = Tron::mnemonicSeed($mnemonic, $passphrase);
 
-        /** @var class-string<TronWallet> $model */
-        $model = config('tron.models.wallet');
+        $wallet = $node->wallets()
+            ->create([
+                'name' => $name,
+                'mnemonic' => implode(" ", $mnemonic),
+                'seed' => $seed
+            ]);
 
-        $wallet = new $model([
-            'name' => $name,
-            'mnemonic' => implode(" ", $mnemonic),
-            'seed' => $seed
-        ]);
-        $wallet->encrypted()->encrypt($password);
-        $wallet->save();
 
-        $this->createAddress($wallet, 'Primary Address', 0);
+        Tron::createAddress($wallet, 'Primary Address', 0);
 
         return $wallet;
     }

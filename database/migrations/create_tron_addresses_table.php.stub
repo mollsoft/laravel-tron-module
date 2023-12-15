@@ -34,6 +34,8 @@ return new class extends Migration {
                 ->nullable();
             $table->json('account_resources')
                 ->nullable();
+            $table->timestamp('touch_at')
+                ->nullable();
             $table->timestamps();
 
             $table->unique(['wallet_id', 'index']);

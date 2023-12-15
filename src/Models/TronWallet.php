@@ -2,18 +2,17 @@
 
 namespace Mollsoft\LaravelTronModule\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Date;
 use Mollsoft\LaravelTronModule\Casts\DecimalCast;
-use Mollsoft\LaravelTronModule\Facades\Tron;
-use Mollsoft\LaravelTronModule\Wallet\Encrypted;
 
 class TronWallet extends Model
 {
     protected $fillable = [
+        'node_id',
         'name',
         'title',
         'password',
@@ -32,27 +31,21 @@ class TronWallet extends Model
     ];
 
     protected $appends = [
-        'plain_password',
-        'plain_mnemonic',
-        'plain_seed',
         'trc20_balances'
     ];
 
     protected $casts = [
+        'password' => 'encrypted',
+        'mnemonic' => 'encrypted',
+        'seed' => 'encrypted',
         'sync_at' => 'datetime',
         'balance' => DecimalCast::class,
         'trc20' => 'json',
     ];
 
-    protected ?Encrypted $encrypted = null;
-
-    public function encrypted(): Encrypted
+    public function node(): BelongsTo
     {
-        if ($this->encrypted === null) {
-            $this->encrypted = new Encrypted($this);
-        }
-
-        return $this->encrypted;
+        return $this->belongsTo(TronNode::class, 'node_id');
     }
 
     public function addresses(): HasMany
@@ -60,22 +53,7 @@ class TronWallet extends Model
         /** @var class-string<TronAddress> $addressModel */
         $addressModel = config('tron.models.address');
 
-        return $this->hasMany($addressModel, 'wallet_id', 'id');
-    }
-
-    protected function plainPassword(): Attribute
-    {
-        return new Attribute(get: fn () => $this->encrypted()->password());
-    }
-
-    protected function plainMnemonic(): Attribute
-    {
-        return new Attribute(get: fn () => $this->encrypted()->mnemonic());
-    }
-
-    protected function plainSeed(): Attribute
-    {
-        return new Attribute(get: fn () => $this->encrypted()->seed());
+        return $this->hasMany($addressModel, 'wallet_id');
     }
 
     protected function trc20Balances(): Attribute

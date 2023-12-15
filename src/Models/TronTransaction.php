@@ -23,6 +23,7 @@ class TronTransaction extends Model
         'to',
         'amount',
         'trc20_contract_address',
+        'block_number',
         'debug_data',
     ];
 
@@ -34,6 +35,7 @@ class TronTransaction extends Model
         'type' => TronTransactionType::class,
         'time_at' => 'datetime',
         'amount' => DecimalCast::class,
+        'block_number' => 'integer',
         'debug_data' => 'json',
     ];
 

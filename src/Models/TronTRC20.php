@@ -22,15 +22,4 @@ class TronTRC20 extends Model
     protected $casts = [
         'decimals' => 'integer',
     ];
-
-    protected ?TRC20Contract $contract = null;
-
-    public function contract(): TRC20Contract
-    {
-        if ($this->contract === null) {
-            $this->contract = Tron::api()->getTRC20Contract($this->address);
-        }
-
-        return $this->contract;
-    }
 }

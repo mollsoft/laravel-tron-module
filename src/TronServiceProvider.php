@@ -4,11 +4,15 @@ namespace Mollsoft\LaravelTronModule;
 
 use Mollsoft\LaravelTronModule\Api\Api;
 use Mollsoft\LaravelTronModule\Api\HttpProvider;
-use Mollsoft\LaravelTronModule\Commands\CreateNewTRC20Command;
-use Mollsoft\LaravelTronModule\Commands\CreateNewWalletCommand;
-use Mollsoft\LaravelTronModule\Commands\GenerateAddressCommand;
+use Mollsoft\LaravelTronModule\Commands\NewTRC20Command;
+use Mollsoft\LaravelTronModule\Commands\NewWalletCommand;
+use Mollsoft\LaravelTronModule\Commands\NewAddressCommand;
 use Mollsoft\LaravelTronModule\Commands\ImportAddressCommand;
-use Mollsoft\LaravelTronModule\Commands\TronSyncCommand;
+use Mollsoft\LaravelTronModule\Commands\AddressSyncCommand;
+use Mollsoft\LaravelTronModule\Commands\NewNodeCommand;
+use Mollsoft\LaravelTronModule\Commands\NodeSyncCommand;
+use Mollsoft\LaravelTronModule\Commands\SyncCommand;
+use Mollsoft\LaravelTronModule\Commands\WalletSyncCommand;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -21,6 +25,7 @@ class TronServiceProvider extends PackageServiceProvider
             ->name('tron')
             ->hasConfigFile()
             ->hasMigrations([
+                'create_tron_nodes_table',
                 'create_tron_wallets_table',
                 'create_tron_trc20_table',
                 'create_tron_addresses_table',
@@ -28,27 +33,21 @@ class TronServiceProvider extends PackageServiceProvider
             ])
             ->runsMigrations()
             ->hasCommands(
-                CreateNewWalletCommand::class,
-                GenerateAddressCommand::class,
+                NewNodeCommand::class,
+                NewWalletCommand::class,
+                NewAddressCommand::class,
                 ImportAddressCommand::class,
-                CreateNewTRC20Command::class,
-                TronSyncCommand::class,
+                NewTRC20Command::class,
+                SyncCommand::class,
+                AddressSyncCommand::class,
+                WalletSyncCommand::class,
+                NodeSyncCommand::class,
             )
             ->hasInstallCommand(function(InstallCommand $command) {
                 $command
                     ->publishConfigFile()
                     ->publishMigrations();
             });
-
-        $this->app->singleton(Api::class, function () {
-            $fullNode = new HttpProvider(config('tron.full_node'), [
-                'TRON-PRO-API-KEY' => config('tron.trongrid_api_key'),
-            ]);
-            $solidityNode = new HttpProvider(config('tron.solidity_node'), [
-                'TRON-PRO-API-KEY' => config('tron.trongrid_api_key'),
-            ]);
-            return new Api($fullNode, $solidityNode);
-        });
 
         $this->app->singleton(Tron::class);
     }
