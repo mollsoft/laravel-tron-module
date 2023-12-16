@@ -3,13 +3,12 @@
 namespace Mollsoft\LaravelTronModule\Handlers;
 
 use Illuminate\Support\Facades\Log;
-use Mollsoft\LaravelTronModule\Models\TronAddress;
-use Mollsoft\LaravelTronModule\Models\TronTransaction;
+use Mollsoft\LaravelTronModule\Models\TronDeposit;
 
 class EmptyWebhookHandler implements WebhookHandlerInterface
 {
-    public function handle(TronAddress $address, TronTransaction $transaction): void
+    public function handle(TronDeposit $deposit): void
     {
-        Log::error('NEW TRANSACTION FOR ADDRESS '.$address->id.' = '.$transaction->txid);
+        Log::error('NEW DEPOSIT FOR ADDRESS '.$deposit->address->address.' = '.$deposit->txid);
     }
 }

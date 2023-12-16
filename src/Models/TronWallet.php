@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Date;
 use Mollsoft\LaravelTronModule\Casts\DecimalCast;
 
 class TronWallet extends Model
@@ -64,5 +63,13 @@ class TronWallet extends Model
                 'balance' => $this->trc20[$trc20->address] ?? null,
             ])
         );
+    }
+
+    public function deposits(): HasMany
+    {
+        /** @var class-string<TronDeposit> $model */
+        $model = config('tron.models.deposit');
+
+        return $this->hasMany($model, 'wallet_id');
     }
 }

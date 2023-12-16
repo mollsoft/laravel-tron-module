@@ -20,7 +20,7 @@ return [
 
     /*
      * Sets the handler to be used when Tron Wallet
-     * receives a new transaction.
+     * receives a new deposit.
      */
     'webhook_handler' => \Mollsoft\LaravelTronModule\Handlers\EmptyWebhookHandler::class,
 
@@ -34,6 +34,7 @@ return [
      * TronAddress model must be or extend `Mollsoft\LaravelTronModule\Models\TronAddress::class`
      * TronTrc20 model must be or extend `Mollsoft\LaravelTronModule\Models\TronTrc20::class`
      * TronTransaction model must be or extend `Mollsoft\LaravelTronModule\Models\TronTransaction::class`
+     * TronDeposit model must be or extend `Mollsoft\LaravelTronModule\Models\TronDeposit::class`
      */
     'models' => [
         'api' => \Mollsoft\LaravelTronModule\Api\Api::class,
@@ -42,5 +43,6 @@ return [
         'address' => \Mollsoft\LaravelTronModule\Models\TronAddress::class,
         'trc20' => \Mollsoft\LaravelTronModule\Models\TronTRC20::class,
         'transaction' => \Mollsoft\LaravelTronModule\Models\TronTransaction::class,
+        'deposit' => \Mollsoft\LaravelTronModule\Models\TronDeposit::class,
     ]
 ];

@@ -2,8 +2,6 @@
 
 namespace Mollsoft\LaravelTronModule;
 
-use Mollsoft\LaravelTronModule\Api\Api;
-use Mollsoft\LaravelTronModule\Api\HttpProvider;
 use Mollsoft\LaravelTronModule\Commands\NewTRC20Command;
 use Mollsoft\LaravelTronModule\Commands\NewWalletCommand;
 use Mollsoft\LaravelTronModule\Commands\NewAddressCommand;
@@ -29,7 +27,8 @@ class TronServiceProvider extends PackageServiceProvider
                 'create_tron_wallets_table',
                 'create_tron_trc20_table',
                 'create_tron_addresses_table',
-                'create_tron_transactions_table'
+                'create_tron_transactions_table',
+                'create_tron_deposits_table',
             ])
             ->runsMigrations()
             ->hasCommands(

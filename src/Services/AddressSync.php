@@ -12,6 +12,7 @@ use Mollsoft\LaravelTronModule\Enums\TronTransactionType;
 use Mollsoft\LaravelTronModule\Facades\Tron;
 use Mollsoft\LaravelTronModule\Handlers\WebhookHandlerInterface;
 use Mollsoft\LaravelTronModule\Models\TronAddress;
+use Mollsoft\LaravelTronModule\Models\TronDeposit;
 use Mollsoft\LaravelTronModule\Models\TronNode;
 use Mollsoft\LaravelTronModule\Models\TronTransaction;
 use Mollsoft\LaravelTronModule\Models\TronTRC20;
@@ -24,7 +25,7 @@ class AddressSync extends BaseSync
     protected readonly Api $api;
     protected readonly ?WebhookHandlerInterface $webhookHandler;
     protected readonly array $trc20Addresses;
-    /** @var TronTransaction[] $webhooks */
+    /** @var TronDeposit[] $webhooks */
     protected array $webhooks = [];
     protected array $touchConfig = [];
 
@@ -153,7 +154,7 @@ class AddressSync extends BaseSync
         $type = $transfer->to === $this->address->address ?
             TronTransactionType::INCOMING : TronTransactionType::OUTGOING;
 
-        $transaction = TronTransaction::updateOrCreate([
+        TronTransaction::updateOrCreate([
             'txid' => $transfer->txid,
             'address' => $this->address->address,
         ], [
@@ -166,8 +167,25 @@ class AddressSync extends BaseSync
             'debug_data' => $transfer->toArray(),
         ]);
 
-        if ($transaction->wasRecentlyCreated) {
-            $this->webhooks[] = $transaction;
+        if ($type === TronTransactionType::INCOMING) {
+            $deposit = $this->address
+                ->deposits()
+                ->updateOrCreate([
+                    'txid' => $transfer->txid,
+                ], [
+                    'wallet_id' => $this->address->wallet_id,
+                    'amount' => $transfer->value,
+                    'block_height' => $transfer->blockNumber ?? 0,
+                    'confirmations' => $transfer->blockNumber && $transfer->blockNumber < $this->node->block_number ? $this->node->block_number - $transfer->blockNumber : 0,
+                    'time_at' => $transfer->time ?? Date::now(),
+                ]);
+
+            if ($deposit->wasRecentlyCreated) {
+                $deposit->setRelation('wallet', $this->wallet);
+                $deposit->setRelation('address', $this->address);
+
+                $this->webhooks[] = $deposit;
+            }
         }
     }
 
@@ -193,22 +211,50 @@ class AddressSync extends BaseSync
             'debug_data' => $transfer->toArray(),
         ]);
 
-        if ($transaction->wasRecentlyCreated) {
-            $this->webhooks[] = $transaction;
-        }
+        if ($type === TronTransactionType::INCOMING) {
+            $trc20 = TronTRC20::whereAddress($transfer->contractAddress)->first();
+            if ($trc20) {
+                $deposit = $this->address
+                    ->deposits()
+                    ->updateOrCreate([
+                        'txid' => $transfer->txid,
+                    ], [
+                        'wallet_id' => $this->address->wallet_id,
+                        'trc20_id' => $trc20->id,
+                        'amount' => $transfer->value,
+                        'time_at' => $transfer->time ?? Date::now(),
+                    ]);
 
-        if( !$transaction->block_number ) {
-            try {
-                $this->log('We request information about block number of TRC-20 transaction '.$transfer->txid.' ...');
-                $blockNumber = $this->api->getTransferBlockNumber($transfer->txid);
-                $this->log('Information received successfully: '.$blockNumber, 'success');
+                if ($deposit->wasRecentlyCreated) {
+                    $deposit->setRelation('wallet', $this->wallet);
+                    $deposit->setRelation('address', $this->address);
+                    $deposit->setRelation('trc20', $trc20);
 
-                $transaction->update([
-                    'block_number' => $blockNumber ?: null
-                ]);
-            }
-            catch(\Exception $e) {
-                $this->log('Error: '.$e->getMessage());
+                    $this->webhooks[] = $deposit;
+                }
+
+                if( !$deposit->block_height ) {
+                    try {
+                        $this->log('We request information about block number of TRC-20 transaction '.$transfer->txid.' ...');
+                        $blockNumber = $this->api->getTransferBlockNumber($transfer->txid);
+                        $this->log('Information received successfully: '.$blockNumber, 'success');
+
+                        $deposit->update([
+                            'block_height' => $blockNumber ?: null,
+                            'confirmations' => $blockNumber && $blockNumber < $this->node->block_number ? $this->node->block_number - $blockNumber : 0,
+                        ]);
+                        $transaction->update([
+                            'block_number' => $blockNumber ?: null,
+                        ]);
+                    } catch (\Exception $e) {
+                        $this->log('Error: '.$e->getMessage());
+                    }
+                }
+                else {
+                    $deposit->update([
+                        'confirmations' => $deposit->block_height < $this->node->block_number ? $this->node->block_number - $deposit->block_height : 0,
+                    ]);
+                }
             }
         }
     }
@@ -217,9 +263,9 @@ class AddressSync extends BaseSync
     {
         if ($this->webhookHandler) {
             foreach ($this->webhooks as $item) {
-                $this->log('Call Webhook Handler for Transaction #'.$item->id.': '.print_r($item->toArray(), true));
+                $this->log('Call Webhook Handler for Deposit #'.$item->id.': '.print_r($item->toArray(), true));
 
-                $this->webhookHandler->handle($this->address, $item);
+                $this->webhookHandler->handle($item);
             }
         }
 

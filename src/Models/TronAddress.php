@@ -72,4 +72,12 @@ class TronAddress extends Model
 
         return $this->hasMany($model, 'address', 'address');
     }
+
+    public function deposits(): HasMany
+    {
+        /** @var class-string<TronDeposit> $model */
+        $model = config('tron.models.deposit');
+
+        return $this->hasMany($model, 'address_id');
+    }
 }
