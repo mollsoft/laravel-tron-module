@@ -116,7 +116,7 @@ class AddressSync extends BaseSync
 
     protected function transactions(): self
     {
-        $minTimestamp = max(($this->address->sync_at?->getTimestamp() ?? 0) - 900, 0) * 1000;
+        $minTimestamp = max(($this->address->sync_at?->getTimestamp() ?? 0) - 3600, 0) * 1000;
 
         $this->log('Method v1/accounts/'.$this->address->address.'/transactions started...');
         $transfers = $this->api

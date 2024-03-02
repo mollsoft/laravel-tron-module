@@ -8,6 +8,8 @@ use Mollsoft\LaravelTronModule\Casts\DecimalCast;
 
 class TronDeposit extends Model
 {
+    public $timestamps = false;
+
     protected $fillable = [
         'wallet_id',
         'address_id',
