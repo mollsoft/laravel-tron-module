@@ -17,15 +17,6 @@ class NewWalletCommand extends Command
     {
         $this->info('You are about to create a new Tron Wallet');
 
-        $nodes = TronNode::get();
-        if ($nodes->count() === 0) {
-            $this->alert("The list of nodes is empty, first create a node.");
-            return;
-        }
-
-        $nodeName = $this->choice('Choice wallet', $nodes->map(fn(TronNode $node) => $node->name)->all());
-        $node = TronNode::whereName($nodeName)->firstOrFail();
-
         do {
             $error = false;
             $name = $this->ask('Please, enter unique wallet name');
@@ -53,7 +44,7 @@ class NewWalletCommand extends Command
             $mnemonic = implode(' ', Tron::mnemonicGenerate());
         }
 
-        $wallet = Tron::createWallet($node, $name, $mnemonic);
+        $wallet = Tron::createWallet($name, $mnemonic);
         $wallet->save();
 
         $this->info('Tron Wallet #'.$wallet->id.' successfully created!');

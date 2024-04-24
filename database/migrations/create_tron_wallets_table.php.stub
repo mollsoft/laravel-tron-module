@@ -11,6 +11,7 @@ return new class extends Migration {
         Schema::create('tron_wallets', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(TronNode::class, 'node_id')
+                ->nullable()
                 ->constrained('tron_nodes')
                 ->cascadeOnDelete();
             $table->string('name')

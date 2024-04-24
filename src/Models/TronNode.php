@@ -19,14 +19,18 @@ class TronNode extends Model
         'full_node',
         'solidity_node',
         'block_number',
+        'requests',
         'sync_at',
+        'worked',
     ];
 
     protected $casts = [
         'full_node' => 'json',
         'solidity_node' => 'json',
         'block_number' => 'integer',
+        'requests' => 'integer',
         'sync_at' => 'datetime',
+        'worked' => 'boolean',
     ];
 
     public function wallets(): HasMany

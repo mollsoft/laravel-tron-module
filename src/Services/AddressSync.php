@@ -34,7 +34,7 @@ class AddressSync extends BaseSync
         protected readonly bool $force = false
     ) {
         $this->wallet = $this->address->wallet;
-        $this->node = $this->wallet->node;
+        $this->node = $this->wallet->node ?? Tron::getNode();
         $this->api = $this->node->api();
         $this->trc20Addresses = TronTRC20::pluck('address')->all();
 
@@ -88,6 +88,7 @@ class AddressSync extends BaseSync
             'account_resources' => $getAccountResources->toArray(),
             'touch_at' => $this->address->touch_at ?: Date::now(),
         ]);
+        $this->node->increment('requests', 2);
 
         return $this;
     }
@@ -98,7 +99,7 @@ class AddressSync extends BaseSync
 
         foreach ($this->trc20Addresses as $trc20Address) {
             $this->log('Get TRC20 Balance from contract *'.$trc20Address.'* started...');
-            $balance = Tron::getTRC20Balance($this->node, $this->address, $trc20Address);
+            $balance = Tron::getTRC20Balance($this->address, $trc20Address);
             $this->log(
                 'Get TRC20 Balance from contract *'.$trc20Address.'* finished: '.$balance->toString(),
                 'success'
@@ -110,6 +111,8 @@ class AddressSync extends BaseSync
         $this->address->update([
             'trc20' => $balances,
         ]);
+
+        $this->node->increment('requests', count($balances));
 
         return $this;
     }
@@ -137,6 +140,7 @@ class AddressSync extends BaseSync
             'sync_at' => Date::now(),
             'touch_at' => $this->address->touch_at ?: Date::now(),
         ]);
+        $this->node->increment('requests', 2);
 
         foreach ($transfers as $item) {
             $this->handleTransfer($item);
@@ -246,6 +250,7 @@ class AddressSync extends BaseSync
                         $transaction->update([
                             'block_number' => $blockNumber ?: null,
                         ]);
+                        $this->node->increment('requests', 1);
                     } catch (\Exception $e) {
                         $this->log('Error: '.$e->getMessage());
                     }

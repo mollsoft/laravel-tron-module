@@ -6,6 +6,7 @@ use Decimal\Decimal;
 use Mollsoft\LaravelTronModule\Api\DTO\TransferPreviewDTO;
 use Mollsoft\LaravelTronModule\Api\DTO\TransferSendDTO;
 use Mollsoft\LaravelTronModule\Api\DTO\TRC20TransferSendDTO;
+use Mollsoft\LaravelTronModule\Facades\Tron;
 use Mollsoft\LaravelTronModule\Models\TronAddress;
 use Mollsoft\LaravelTronModule\Models\TronTRC20;
 
@@ -13,9 +14,10 @@ trait Transfer
 {
     public function previewTransfer(TronAddress $from, string $to, Decimal|float|int|string $amount): TransferPreviewDTO
     {
-        return $from
-            ->wallet
-            ->node
+        $node = $from->wallet->node ?? Tron::getNode();
+        $node->increment('requests', 4);
+
+        return $node
             ->api()
             ->transfer($from->address, $to, $amount)
             ->preview();
@@ -23,9 +25,10 @@ trait Transfer
 
     public function transfer(TronAddress $from, string $to, Decimal|float|int|string $amount): TransferSendDTO
     {
-        return $from
-            ->wallet
-            ->node
+        $node = $from->wallet->node ?? Tron::getNode();
+        $node->increment('requests', 5);
+
+        return $node
             ->api()
             ->transfer($from->address, $to, $amount)
             ->send($from->private_key);
@@ -33,16 +36,19 @@ trait Transfer
 
     public function transferAll(TronAddress $from, string $to): TransferSendDTO
     {
-        $api = $from->wallet->node->api();
+        $node = $from->wallet->node ?? Tron::getNode();
+        $node->increment('requests', 4);
 
-        $preview = $api
+        $preview = $node->api()
             ->transfer($from->address, $to, 1)
             ->preview();
         if ($preview->hasError()) {
             throw new \Exception($preview->error);
         }
 
-        return $api
+        $node->increment('requests', 5);
+
+        return $node->api()
             ->transfer(
                 $from->address,
                 $to,
@@ -53,9 +59,10 @@ trait Transfer
 
     public function transferTRC20(TronTRC20 $trc20, TronAddress $from, string $to, Decimal|float|int|string $amount): TRC20TransferSendDTO
     {
-        return $from
-            ->wallet
-            ->node
+        $node = $from->wallet->node ?? Tron::getNode();
+        $node->increment('requests', 6);
+
+        return $node
             ->api()
             ->transferTRC20($trc20->address, $from->address, $to, $amount)
             ->send($from->private_key);
@@ -63,16 +70,21 @@ trait Transfer
 
     public function transferTRC20All(TronTRC20 $trc20, TronAddress $from, string $to): TRC20TransferSendDTO
     {
-        $api = $from->wallet->node->api();
+        $node = $from->wallet->node ?? Tron::getNode();
+        $node->increment('requests', 5);
 
-        $preview = $api
+        $preview = $node
+            ->api()
             ->transferTRC20($trc20->address, $from->address, $to, 1)
             ->preview();
         if ($preview->hasError()) {
             throw new \Exception($preview->error);
         }
 
-        return $api
+        $node->increment('requests', 6);
+
+        return $node
+            ->api()
             ->transferTRC20($trc20->address, $from->address, $to, $preview->tokenBefore)
             ->send($from->private_key);
     }

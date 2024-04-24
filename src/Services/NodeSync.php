@@ -17,22 +17,31 @@ class NodeSync extends BaseSync
     {
         parent::run();
 
-        $this
-            ->currentBlock()
-            ->syncWallets();
+        $this->syncBlock();
     }
 
-    protected function currentBlock(): self
+    protected function syncBlock(): self
     {
-        $getBlock = $this->node->api()->manager->request('wallet/getblock');
-        $blockNumber = $getBlock['block_header']['raw_data']['number'] ?? null;
-        if( is_null($blockNumber) ) {
-            throw new \Exception('Current block is unknown!');
+        try {
+            $getBlock = $this->node->api()->manager->request('wallet/getblock');
+            $blockNumber = $getBlock['block_header']['raw_data']['number'] ?? null;
+            if( is_null($blockNumber) ) {
+                throw new \Exception('Current block is unknown!');
+            }
+        }
+        catch(\Exception $e) {
+            $this->node->update([
+                'worked' => false,
+            ]);
+
+            throw $e;
         }
 
+        $this->node->increment('requests');
         $this->node->update([
             'block_number' => $blockNumber,
-            'sync_at' => Date::now()
+            'sync_at' => Date::now(),
+            'worked' => true,
         ]);
 
         return $this;
@@ -40,19 +49,19 @@ class NodeSync extends BaseSync
 
     protected function syncWallets(): self
     {
-        foreach( $this->node->wallets as $wallet ) {
-            $this->log('-- Started sync wallet '.$wallet->name.'...');
-
-            $service = App::make(WalletSync::class, [
-                'wallet' => $wallet,
-            ]);
-
-            $service->setLogger($this->logger);
-
-            $service->run();
-
-            $this->log('-- Finished sync wallet '.$wallet->name, 'success');
-        }
+//        foreach( $this->node->wallets as $wallet ) {
+//            $this->log('-- Started sync wallet '.$wallet->name.'...');
+//
+//            $service = App::make(WalletSync::class, [
+//                'wallet' => $wallet,
+//            ]);
+//
+//            $service->setLogger($this->logger);
+//
+//            $service->run();
+//
+//            $this->log('-- Finished sync wallet '.$wallet->name, 'success');
+//        }
 
         return $this;
     }

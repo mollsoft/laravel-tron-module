@@ -4,6 +4,8 @@ namespace Mollsoft\LaravelTronModule\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
+use Mollsoft\LaravelTronModule\Enums\TronModel;
+use Mollsoft\LaravelTronModule\Facades\Tron;
 use Mollsoft\LaravelTronModule\Models\TronAddress;
 use Mollsoft\LaravelTronModule\Models\TronWallet;
 use Mollsoft\LaravelTronModule\Services\AddressSync;
@@ -21,7 +23,7 @@ class WalletSyncCommand extends Command
 
         try {
             /** @var class-string<TronWallet> $model */
-            $model = config('tron.models.wallet');
+            $model = Tron::getModel(TronModel::Wallet);
             $wallet = $model::findOrFail($this->argument('wallet_id'));
 
             $this->line('- Wallet: *'.$wallet->name.'*'.$wallet->title);

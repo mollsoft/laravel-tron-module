@@ -4,6 +4,7 @@ namespace Mollsoft\LaravelTronModule\Concerns;
 
 use BIP\BIP44;
 use Mollsoft\LaravelTronModule\Api\Helpers\AddressHelper;
+use Mollsoft\LaravelTronModule\Facades\Tron;
 use Mollsoft\LaravelTronModule\Models\TronAddress;
 use Mollsoft\LaravelTronModule\Models\TronNode;
 use Mollsoft\LaravelTronModule\Models\TronWallet;
@@ -41,8 +42,13 @@ trait Address
         ]);
     }
 
-    public function validateAddress(TronNode $node, string $address): bool
+    public function validateAddress(string $address, ?TronNode $node = null): bool
     {
+        if( !$node ) {
+            $node = Tron::getNode();
+        }
+        $node->increment('requests', 1);
+
         return $node->api()->validateAddress($address);
     }
 }
