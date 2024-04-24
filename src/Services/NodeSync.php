@@ -29,6 +29,8 @@ class NodeSync extends BaseSync
                 'requests' => 0,
                 'requests_at' => Date::now(),
             ]);
+
+            $this->log('Requests counter successfully reset.');
         }
 
         return $this;
