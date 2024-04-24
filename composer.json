@@ -15,11 +15,11 @@
     "tron"
   ],
   "require": {
-    "php": "^8.2",
+    "php": "^8.1",
     "ext-gmp": "*",
     "ext-decimal": "*",
     "ext-ctype": "*",
-    "illuminate/contracts": "^10.0",
+    "illuminate/contracts": "^10.0|^11.0",
     "spatie/laravel-package-tools": "^1.15",
     "furqansiddiqui/bip39-mnemonic-php": "^0.1.7",
     "minter/minter-php-bip-44": "^1.2",

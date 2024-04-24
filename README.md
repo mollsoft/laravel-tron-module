@@ -29,9 +29,9 @@ You can contact me for help in integrating payment acceptance into your project.
 
 The following versions of PHP are supported by this version.
 
-* PHP 8.2 and older
+* PHP 8.1 and older
+* Laravel 10 or older
 * PHP Extensions: Decimal, GMP, BCMath, CType.
-* Laravel Queues
 
 
 ## Installation
