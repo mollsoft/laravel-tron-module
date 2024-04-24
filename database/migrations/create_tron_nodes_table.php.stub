@@ -18,6 +18,8 @@ return new class extends Migration {
             $table->unsignedBigInteger('block_number');
             $table->unsignedInteger('requests')
                 ->default(0);
+            $table->date('requests_at')
+                ->useCurrent();
             $table->timestamp('sync_at')
                 ->nullable();
             $table->boolean('worked')

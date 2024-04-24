@@ -17,7 +17,21 @@ class NodeSync extends BaseSync
     {
         parent::run();
 
-        $this->syncBlock();
+        $this
+            ->resetRequests()
+            ->syncBlock();
+    }
+
+    protected function resetRequests(): self
+    {
+        if( !$this->node->requests_at->isToday() ) {
+            $this->node->update([
+                'requests' => 0,
+                'requests_at' => Date::now(),
+            ]);
+        }
+
+        return $this;
     }
 
     protected function syncBlock(): self

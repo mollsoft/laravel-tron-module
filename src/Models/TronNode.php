@@ -20,6 +20,7 @@ class TronNode extends Model
         'solidity_node',
         'block_number',
         'requests',
+        'requests_at',
         'sync_at',
         'worked',
     ];
@@ -29,6 +30,7 @@ class TronNode extends Model
         'solidity_node' => 'json',
         'block_number' => 'integer',
         'requests' => 'integer',
+        'requests_at' => 'date',
         'sync_at' => 'datetime',
         'worked' => 'boolean',
     ];
