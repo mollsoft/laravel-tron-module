@@ -63,9 +63,19 @@ Register Service Provider and Facade in app, edit `config/app.php`:
 ])->toArray(),
 ```
 
-In file `app/Console/Kernel` in method `schedule(Schedule $schedule)` add
-```
+For Laravel 10 you edit file `app/Console/Kernel` in method `schedule(Schedule $schedule)` add:
+```php
 $schedule->command('tron:sync')
+    ->everyMinute()
+    ->runInBackground();
+```
+
+or for Laravel 11+ add this content to `routes/console.php`:
+
+```php
+use Illuminate\Support\Facades\Schedule;
+
+Schedule::command('tron:sync')
     ->everyMinute()
     ->runInBackground();
 ```
