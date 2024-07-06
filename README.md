@@ -70,6 +70,56 @@ $schedule->command('tron:sync')
     ->runInBackground();
 ```
 
+## How use?
+1. Firstly register an account on the <a href="https://www.trongrid.io/register">TronGrid</a> website and get an <a href="https://www.trongrid.io/dashboard/keys">API key</a>.
+2. Using the following code, create a node through which the library will work:
+```php
+$apiKey = "..."; // API Key from TronGrid.io
+Tron::createTronGridNode($apiKey, 'node_name');
+```
+3. Now you can create Tron Wallet using code:
+```php
+$mnemonic = Tron::mnemonicGenerate();
+echo 'Mnemonic: '.implode(' ', $mnemonic);
+
+$wallet = Tron::createWallet('wallet_name', $mnemonic);
+```
+4. Create primary Tron Address in your Wallet using code:
+```php
+$address = Tron::createAddress($wallet, 'primary_address_name');
+
+echo 'Primary Address: '.$address->address;
+```
+5. Now you can send TRX using this code:
+```php
+$to = 'receiver tron address';
+$amount = 1;
+
+$transfer = Tron::transfer($address, $to, $amount);
+
+echo 'TXID: '.$transfer->txid;
+```
+
+### If you want work with TRC-20
+#### For example: Tether USDT
+
+1. You must create TronTRC20 model using this code:
+```php
+$contractAddress = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+
+$trc20Token = TronTRC20::create($contractAddress);
+```
+2. For transfer Tether USDT TRC-20 for another address you can use this code:
+```php
+$to = 'receiver tron address';
+$amount = 1;
+
+$transferTRC20 = Tron::transferTRC20($address, $to, $amount);
+
+echo 'TXID: '.$transferTRC20->txid;
+```
+
+
 ## Commands
 
 Synchronizing everything
