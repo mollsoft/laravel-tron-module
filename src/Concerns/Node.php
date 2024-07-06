@@ -66,6 +66,7 @@ trait Node
                 ]
             ],
             'requests' => 1,
+            'worked' => true,
         ]);
 
         $getBlock = $node->api()->manager->request('wallet/getblock');

@@ -38,7 +38,6 @@ class Tron
     {
         /** @var TronNode $node */
         $node = $this->getModel(TronModel::Node)::query()
-            ->whereNotNull('worked')
             ->where('worked', '=', true)
             ->orderBy('requests')
             ->firstOrFail();
