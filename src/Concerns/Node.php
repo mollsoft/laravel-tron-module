@@ -25,6 +25,7 @@ trait Node
             'full_node' => $fullNode,
             'solidity_node' => $solidityNode,
             'requests' => 1,
+            'worked' => true,
         ]);
 
         $getBlock = $node->api()->manager->request('wallet/getblock');
