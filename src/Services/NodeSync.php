@@ -24,7 +24,7 @@ class NodeSync extends BaseSync
 
     protected function resetRequests(): self
     {
-        if( !$this->node->requests_at->isToday() ) {
+        if( is_null($this->node->requests_at) || !$this->node->requests_at->isToday() ) {
             $this->node->update([
                 'requests' => 0,
                 'requests_at' => Date::now(),
