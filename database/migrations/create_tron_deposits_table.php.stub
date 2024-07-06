@@ -23,7 +23,8 @@ return new class extends Migration {
                 ->constrained('tron_trc20')
                 ->cascadeOnDelete();
             $table->string('txid');
-            $table->unsignedDecimal('amount', 20, 6);
+            $table->decimal('amount', 20, 6)
+                ->unsigned();
             $table->unsignedBigInteger('block_height')
                 ->nullable();
             $table->unsignedInteger('confirmations')
