@@ -5,6 +5,7 @@ namespace Mollsoft\LaravelTronModule\Concerns;
 use Decimal\Decimal;
 use Mollsoft\LaravelTronModule\Api\DTO\TransferPreviewDTO;
 use Mollsoft\LaravelTronModule\Api\DTO\TransferSendDTO;
+use Mollsoft\LaravelTronModule\Api\DTO\TRC20TransferPreviewDTO;
 use Mollsoft\LaravelTronModule\Api\DTO\TRC20TransferSendDTO;
 use Mollsoft\LaravelTronModule\Facades\Tron;
 use Mollsoft\LaravelTronModule\Models\TronAddress;
@@ -66,6 +67,17 @@ trait Transfer
             ->api()
             ->transferTRC20($trc20->address, $from->address, $to, $amount)
             ->send($from->private_key);
+    }
+
+    public function previewTransferTRC20(TronTRC20 $trc20, TronAddress $from, string $to, Decimal|float|int|string $amount): TRC20TransferPreviewDTO
+    {
+        $node = $from->wallet->node ?? Tron::getNode();
+        $node->increment('requests', 5);
+
+        return $node
+            ->api()
+            ->transferTRC20($trc20->address, $from->address, $to, $amount)
+            ->preview();
     }
 
     public function transferTRC20All(TronTRC20 $trc20, TronAddress $from, string $to): TRC20TransferSendDTO
