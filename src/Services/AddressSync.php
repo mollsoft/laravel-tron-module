@@ -101,11 +101,11 @@ class AddressSync extends BaseSync
             $this->log('Get TRC20 Balance from contract *'.$trc20Address.'* started...');
             $balance = Tron::getTRC20Balance($this->address, $trc20Address);
             $this->log(
-                'Get TRC20 Balance from contract *'.$trc20Address.'* finished: '.$balance->toString(),
+                'Get TRC20 Balance from contract *'.$trc20Address.'* finished: '.$balance->__toString(),
                 'success'
             );
 
-            $balances[$trc20Address] = $balance->toString();
+            $balances[$trc20Address] = $balance->__toString();
         }
 
         $this->address->update([

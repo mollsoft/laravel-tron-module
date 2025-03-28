@@ -2,7 +2,8 @@
 
 namespace Mollsoft\LaravelTronModule\Api\DTO;
 
-use Decimal\Decimal;
+
+use Brick\Math\BigDecimal;
 
 class TransferPreviewDTO
 {
@@ -11,14 +12,14 @@ class TransferPreviewDTO
         public readonly ?AccountDTO $from,
         public readonly ?AccountResourcesDTO $fromResources,
         public readonly ?AccountDTO $to,
-        public readonly ?Decimal $balanceBefore,
-        public readonly ?Decimal $balanceAfter,
-        public readonly ?Decimal $activateFee,
+        public readonly ?BigDecimal $balanceBefore,
+        public readonly ?BigDecimal $balanceAfter,
+        public readonly ?BigDecimal $activateFee,
         public readonly ?array $transaction,
         public readonly ?int $bandwidthRequired = null,
         public readonly ?int $bandwidthBefore = null,
         public readonly ?int $bandwidthAfter = null,
-        public readonly ?Decimal $bandwidthFee = null,
+        public readonly ?BigDecimal $bandwidthFee = null,
     )
     {}
 
@@ -35,15 +36,15 @@ class TransferPreviewDTO
             'fromResources' => $this->fromResources?->toArray(),
             'to' => $this->to?->toArray(),
             'balance' => [
-                'before' => $this->balanceBefore?->toString(),
-                'after' => $this->balanceAfter?->toString(),
+                'before' => $this->balanceBefore?->__toString(),
+                'after' => $this->balanceAfter?->__toString(),
             ],
-            'activateFee' => $this->activateFee?->toString(),
+            'activateFee' => $this->activateFee?->__toString(),
             'bandwidth' => [
                 'required' => $this->bandwidthRequired,
                 'before' => $this->bandwidthBefore,
                 'after' => $this->bandwidthAfter,
-                'fee' => $this->bandwidthFee?->toString(),
+                'fee' => $this->bandwidthFee?->__toString(),
             ]
         ];
     }

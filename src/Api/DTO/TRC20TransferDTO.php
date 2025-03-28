@@ -2,7 +2,7 @@
 
 namespace Mollsoft\LaravelTronModule\Api\DTO;
 
-use Decimal\Decimal;
+use Brick\Math\BigDecimal;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Date;
 use Mollsoft\LaravelTronModule\Api\Helpers\AddressHelper;
@@ -19,7 +19,7 @@ class TRC20TransferDTO
         public readonly string $contractAddress,
         public readonly string $contractName,
         public readonly string $contractSymbol,
-        public readonly Decimal $value,
+        public readonly BigDecimal $value,
     )
     {
     }
@@ -36,7 +36,7 @@ class TRC20TransferDTO
             ],
             'from' => $this->from,
             'to' => $this->to,
-            'value' => $this->value->toString(),
+            'value' => $this->value->__toString(),
         ];
     }
 

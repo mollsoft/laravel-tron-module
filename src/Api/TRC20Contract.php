@@ -2,7 +2,7 @@
 
 namespace Mollsoft\LaravelTronModule\Api;
 
-use Decimal\Decimal;
+use Brick\Math\BigDecimal;
 use Mollsoft\LaravelTronModule\Api\Helpers\AddressHelper;
 use Mollsoft\LaravelTronModule\Api\Helpers\AmountHelper;
 use phpseclib\Math\BigInteger;
@@ -72,7 +72,7 @@ class TRC20Contract
         return $this->decimals;
     }
 
-    public function balanceOf(string $address): Decimal
+    public function balanceOf(string $address): BigDecimal
     {
         $address = AddressHelper::toBase58($address);
         $addressHex = AddressHelper::toHex($address);
@@ -161,12 +161,12 @@ class TRC20Contract
         string $function,
         array $params = null,
         string $ownerAddress = null,
-        string|int|float|Decimal $feeLimit = 1,
-        string|int|float|Decimal $cellValue = 0,
+        string|int|float|BigDecimal $feeLimit = 1,
+        string|int|float|BigDecimal $cellValue = 0,
         bool $raw = false
     ): array {
-        $feeLimit = AmountHelper::decimalToSun($feeLimit instanceof Decimal ? $feeLimit->toString() : $feeLimit);
-        $cellValue = AmountHelper::decimalToSun($cellValue instanceof Decimal ? $cellValue->toString() : $cellValue);
+        $feeLimit = AmountHelper::decimalToSun($feeLimit);
+        $cellValue = AmountHelper::decimalToSun($cellValue);
 
         if ($params === null) {
             $params = [];

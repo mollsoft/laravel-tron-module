@@ -3,7 +3,7 @@
 namespace Mollsoft\LaravelTronModule\Api\DTO;
 
 
-use Decimal\Decimal;
+use Brick\Math\BigDecimal;
 
 class TRC20TransferPreviewDTO
 {
@@ -12,23 +12,23 @@ class TRC20TransferPreviewDTO
         public readonly ?AccountDTO          $from,
         public readonly ?AccountResourcesDTO $fromResources,
         public readonly ?AccountDTO          $to,
-        public readonly ?Decimal             $balanceBefore,
-        public readonly ?Decimal             $balanceAfter,
-        public readonly ?Decimal             $tokenBefore,
-        public readonly ?Decimal             $tokenAfter,
+        public readonly ?BigDecimal             $balanceBefore,
+        public readonly ?BigDecimal             $balanceAfter,
+        public readonly ?BigDecimal             $tokenBefore,
+        public readonly ?BigDecimal             $tokenAfter,
         public readonly ?bool                $activated,
         public readonly ?array               $energyDebug,
         public readonly ?int                 $energyRequired,
         public readonly ?int                 $energyBefore,
         public readonly ?int                 $energyAfter,
         public readonly ?int                 $energyInsufficient,
-        public readonly ?Decimal             $energyFee,
+        public readonly ?BigDecimal             $energyFee,
         public readonly ?array               $bandwidthDebug,
         public readonly ?int                 $bandwidthRequired,
         public readonly ?int                 $bandwidthBefore,
         public readonly ?int                 $bandwidthAfter,
         public readonly ?int                 $bandwidthInsufficient,
-        public readonly ?Decimal             $bandwidthFee,
+        public readonly ?BigDecimal             $bandwidthFee,
         public readonly ?array               $transaction,
     )
     {
@@ -47,12 +47,12 @@ class TRC20TransferPreviewDTO
             'fromResources' => $this->fromResources->toArray(),
             'to' => $this->to->toArray(),
             'balance' => [
-                'before' => $this->balanceBefore?->toString(),
-                'after' => $this->balanceAfter?->toString(),
+                'before' => $this->balanceBefore?->__toString(),
+                'after' => $this->balanceAfter?->__toString(),
             ],
             'token' => [
-                'before' => $this->tokenBefore?->toString(),
-                'after' => $this->tokenAfter?->toString(),
+                'before' => $this->tokenBefore?->__toString(),
+                'after' => $this->tokenAfter?->__toString(),
             ],
             'activated' => $this->activated,
             'energy' => [
@@ -60,14 +60,14 @@ class TRC20TransferPreviewDTO
                 'before' => $this->energyBefore,
                 'after' => $this->energyAfter,
                 'insufficient' => $this->energyInsufficient,
-                'fee' => $this->energyFee?->toString(),
+                'fee' => $this->energyFee?->__toString(),
             ],
             'bandwidth' => [
                 'required' => $this->bandwidthRequired,
                 'before' => $this->bandwidthBefore,
                 'after' => $this->bandwidthAfter,
                 'insufficient' => $this->bandwidthInsufficient,
-                'fee' => $this->bandwidthFee?->toString(),
+                'fee' => $this->bandwidthFee?->__toString(),
             ],
         ];
     }

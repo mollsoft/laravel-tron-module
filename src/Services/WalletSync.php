@@ -2,8 +2,7 @@
 
 namespace Mollsoft\LaravelTronModule\Services;
 
-use Closure;
-use Decimal\Decimal;
+use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Date;
 use Mollsoft\LaravelTronModule\Models\TronWallet;
@@ -45,14 +44,14 @@ class WalletSync extends BaseSync
 
     protected function calculateBalances(): self
     {
-        $balance = new Decimal('0');
+        $balance = BigDecimal::of('0');
         $trc20 = [];
 
         foreach ($this->wallet->addresses as $address) {
-            $balance = $balance->add((string)($address->balance ?: 0));
+            $balance = $balance->plus(($address->balance ?: 0));
             foreach ($address->trc20 as $k => $v) {
-                $current = new Decimal($trc20[$k] ?? 0);
-                $trc20[$k] = $current->add($v)->toString();
+                $current = BigDecimal::of($trc20[$k] ?? 0);
+                $trc20[$k] = $current->plus($v)->__toString();
             }
         }
 

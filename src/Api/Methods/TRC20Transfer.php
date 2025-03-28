@@ -2,7 +2,7 @@
 
 namespace Mollsoft\LaravelTronModule\Api\Methods;
 
-use Decimal\Decimal;
+use Brick\Math\BigDecimal;
 use Mollsoft\LaravelTronModule\Api\Api;
 use Mollsoft\LaravelTronModule\Api\DTO\TRC20TransferPreviewDTO;
 use Mollsoft\LaravelTronModule\Api\DTO\TRC20TransferSendDTO;
@@ -19,8 +19,8 @@ class TRC20Transfer
         public readonly TRC20Contract $contract,
         public readonly string        $from,
         public readonly string        $to,
-        public readonly Decimal       $amount,
-        public readonly Decimal       $feeLimit,
+        public readonly BigDecimal       $amount,
+        public readonly BigDecimal       $feeLimit,
     )
     {
     }
@@ -64,12 +64,12 @@ class TRC20Transfer
             }
 
             $balanceBefore = $from->balance;
-            $balanceAfter = $balanceBefore->copy();
+            $balanceAfter = clone $balanceBefore;
 
             $tokenBefore = $this->contract->balanceOf($this->from);
-            $tokenAfter = $tokenBefore->sub($this->amount);
+            $tokenAfter = $tokenBefore->minus($this->amount);
 
-            if ($tokenAfter < 0) {
+            if ($tokenAfter->isNegative()) {
                 throw new \Exception('Insufficient token balance');
             }
 
@@ -87,8 +87,8 @@ class TRC20Transfer
                 $energyAfter = $energyBefore;
                 $energyInsufficient = $energyRequired - $energyBefore;
                 $energyPrice = $this->api->chainParameter('getEnergyFee', 420);
-                $energyFee = AmountHelper::sunToDecimal($energyPrice)->mul($energyInsufficient);
-                $balanceAfter = $balanceAfter->sub($energyFee);
+                $energyFee = AmountHelper::sunToDecimal($energyPrice)->multipliedBy($energyInsufficient);
+                $balanceAfter = $balanceAfter->minus($energyFee);
             } else {
                 $energyAfter = $energyBefore - $energyRequired;
             }
@@ -105,17 +105,17 @@ class TRC20Transfer
                 $bandwidthInsufficient = $bandwidthRequired;
                 $bandwidthAfter = $bandwidthBefore;
                 $bandwidthFee = AmountHelper::sunToDecimal(($bandwidthRequired + 1) * 1000);
-                $balanceAfter = $balanceAfter->sub($bandwidthFee);
+                $balanceAfter = $balanceAfter->minus($bandwidthFee);
             } else {
                 $bandwidthAfter = $bandwidthBefore - $bandwidthRequired;
             }
             $transaction = $data['transaction'];
 
-            if( $this->feeLimit->sub($bandwidthFee ?: 0)->sub($energyFee ?: 0) < 0 ) {
+            if( $this->feeLimit->minus($bandwidthFee ?: 0)->minus($energyFee ?: 0)->isNegative() ) {
                 throw new \Exception('Fees over limit');
             }
 
-            if ($balanceAfter < 0) {
+            if ($balanceAfter->isNegative()) {
                 throw new \Exception('Insufficient balance');
             }
         } catch (\Exception $e) {

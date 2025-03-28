@@ -2,7 +2,7 @@
 
 namespace Mollsoft\LaravelTronModule\Api;
 
-use Decimal\Decimal;
+use Brick\Math\BigDecimal;
 use kornrunner\Secp256k1;
 use kornrunner\Signature\Signature;
 use Mollsoft\LaravelTronModule\Api\DTO\AccountResourcesDTO;
@@ -147,11 +147,11 @@ class Api
         return $data['blockNumber'] ?? null;
     }
 
-    public function transfer(string $from, string $to, string|int|float|Decimal $amount): Transfer
+    public function transfer(string $from, string $to, string|int|float|BigDecimal $amount): Transfer
     {
         $from = AddressHelper::toBase58($from);
         $to = AddressHelper::toBase58($to);
-        $amount = $amount instanceof Decimal ? $amount : new Decimal((string)$amount);
+        $amount = BigDecimal::of($amount);
 
         return new Transfer(
             api: $this,
@@ -165,14 +165,14 @@ class Api
         string $contractAddress,
         string $from,
         string $to,
-        string|int|float|Decimal $amount,
-        string|int|float|Decimal $feeLimit = 30
+        string|int|float|BigDecimal $amount,
+        string|int|float|BigDecimal $feeLimit = 30
     ): TRC20Transfer {
         $contract = $this->getTRC20Contract($contractAddress);
         $from = AddressHelper::toBase58($from);
         $to = AddressHelper::toBase58($to);
-        $amount = $amount instanceof Decimal ? $amount : new Decimal((string)$amount);
-        $feeLimit = $feeLimit instanceof Decimal ? $feeLimit : new Decimal((string)$feeLimit);
+        $amount = BigDecimal::of($amount);
+        $feeLimit = BigDecimal::of($feeLimit);
 
         return new TRC20Transfer(
             api: $this,

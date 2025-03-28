@@ -2,7 +2,7 @@
 
 namespace Mollsoft\LaravelTronModule\Concerns;
 
-use Decimal\Decimal;
+use Brick\Math\BigDecimal;
 use Mollsoft\LaravelTronModule\Api\DTO\TransferPreviewDTO;
 use Mollsoft\LaravelTronModule\Api\DTO\TransferSendDTO;
 use Mollsoft\LaravelTronModule\Api\DTO\TRC20TransferPreviewDTO;
@@ -13,7 +13,7 @@ use Mollsoft\LaravelTronModule\Models\TronTRC20;
 
 trait Transfer
 {
-    public function previewTransfer(TronAddress $from, string $to, Decimal|float|int|string $amount): TransferPreviewDTO
+    public function previewTransfer(TronAddress $from, string $to, BigDecimal|float|int|string $amount): TransferPreviewDTO
     {
         $node = $from->wallet->node ?? Tron::getNode();
         $node->increment('requests', 4);
@@ -24,7 +24,7 @@ trait Transfer
             ->preview();
     }
 
-    public function transfer(TronAddress $from, string $to, Decimal|float|int|string $amount): TransferSendDTO
+    public function transfer(TronAddress $from, string $to, BigDecimal|float|int|string $amount): TransferSendDTO
     {
         $node = $from->wallet->node ?? Tron::getNode();
         $node->increment('requests', 5);
@@ -58,7 +58,7 @@ trait Transfer
             ->send($from->private_key);
     }
 
-    public function transferTRC20(TronTRC20 $trc20, TronAddress $from, string $to, Decimal|float|int|string $amount): TRC20TransferSendDTO
+    public function transferTRC20(TronTRC20 $trc20, TronAddress $from, string $to, BigDecimal|float|int|string $amount): TRC20TransferSendDTO
     {
         $node = $from->wallet->node ?? Tron::getNode();
         $node->increment('requests', 6);
@@ -69,7 +69,7 @@ trait Transfer
             ->send($from->private_key);
     }
 
-    public function previewTransferTRC20(TronTRC20 $trc20, TronAddress $from, string $to, Decimal|float|int|string $amount): TRC20TransferPreviewDTO
+    public function previewTransferTRC20(TronTRC20 $trc20, TronAddress $from, string $to, BigDecimal|float|int|string $amount): TRC20TransferPreviewDTO
     {
         $node = $from->wallet->node ?? Tron::getNode();
         $node->increment('requests', 5);

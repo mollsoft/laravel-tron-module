@@ -2,35 +2,37 @@
 
 namespace Mollsoft\LaravelTronModule\Api\Helpers;
 
-use Decimal\Decimal;
+use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
 
 class AmountHelper
 {
-    public static function toDecimal(string|int|float|Decimal $value, int $decimals = 0): Decimal
+    public static function toDecimal(string|int|float|BigDecimal $value, int $decimals = 0): BigDecimal
     {
-        if( $value instanceof Decimal ) {
-            return $value;
-        }
+        $value = BigDecimal::of($value);
 
-        $value = (new Decimal((string)$value));
-        if( $decimals ) {
-            $value = $value->div(pow(10, $decimals));
-        }
-
-        return $value;
+        return $decimals ? $value : $value->dividedBy(
+            BigDecimal::of(10)->power($decimals),
+            $decimals,
+            RoundingMode::DOWN
+        );
     }
 
-    public static function sunToDecimal(string|int|float|Decimal $value): Decimal
+    public static function sunToDecimal(string|int|float|BigDecimal $value): BigDecimal
     {
         return self::toDecimal($value, 6);
     }
 
-    public static function toSun(string|int|float|Decimal $value, int $decimals): int
+    public static function toSun(string|int|float|BigDecimal $value, int $decimals): int
     {
-        return round(($value instanceof Decimal ? $value->toString() : $value) * pow(10, $decimals));
+        $value = BigDecimal::of($value);
+
+        return $value->multipliedBy(
+            BigDecimal::of(10)->power($decimals)
+        )->toScale(0, RoundingMode::HALF_UP)->toInt();
     }
 
-    public static function decimalToSun(string|int|float|Decimal $value): int
+    public static function decimalToSun(string|int|float|BigDecimal $value): int
     {
         return self::toSun($value, 6);
     }

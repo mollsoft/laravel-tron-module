@@ -2,7 +2,7 @@
 
 namespace Mollsoft\LaravelTronModule\Api\DTO;
 
-use Decimal\Decimal;
+use Brick\Math\BigDecimal;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Date;
 use Mollsoft\LaravelTronModule\Api\Helpers\AmountHelper;
@@ -17,7 +17,7 @@ class TransactionDTO
         public readonly ?bool $success,
         public readonly ?int $bandwidth,
         public readonly ?int $energy,
-        public readonly ?Decimal $fee,
+        public readonly ?BigDecimal $fee,
     )
     {
     }
@@ -30,7 +30,7 @@ class TransactionDTO
             'blockTime' => $this->blockTime->toDateTimeString(),
             'bandwidth' => $this->bandwidth,
             'energy' => $this->energy,
-            'fee' => $this->fee?->toString(),
+            'fee' => $this->fee?->__toString(),
         ];
     }
 

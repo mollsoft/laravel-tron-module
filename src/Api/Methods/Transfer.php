@@ -2,9 +2,7 @@
 
 namespace Mollsoft\LaravelTronModule\Api\Methods;
 
-use Decimal\Decimal;
-use kornrunner\Secp256k1;
-use kornrunner\Signature\Signature;
+use Brick\Math\BigDecimal;
 use Mollsoft\LaravelTronModule\Api\Api;
 use Mollsoft\LaravelTronModule\Api\DTO\TransferPreviewDTO;
 use Mollsoft\LaravelTronModule\Api\DTO\TransferSendDTO;
@@ -19,7 +17,7 @@ class Transfer
         protected readonly Api  $api,
         public readonly string  $from,
         public readonly string  $to,
-        public readonly Decimal $amount,
+        public readonly BigDecimal $amount,
     )
     {
     }
@@ -53,13 +51,13 @@ class Transfer
             }
 
             $balanceBefore = $from->balance;
-            $balanceAfter = $balanceBefore->sub($this->amount);
+            $balanceAfter = $balanceBefore->minus($this->amount);
 
             if (!$to->activated) {
                 $activateFee = AmountHelper::sunToDecimal(100000);
-                $balanceAfter = $balanceAfter->sub($activateFee);
+                $balanceAfter = $balanceAfter->minus($activateFee);
             }
-            if ($balanceAfter < 0) {
+            if ($balanceAfter->isNegative()) {
                 throw new \Exception('Insufficient balance');
             }
 
@@ -73,10 +71,10 @@ class Transfer
             $bandwidthBefore = $fromResources->bandwidthAvailable;
             if( $bandwidthRequired > $bandwidthBefore ) {
                 $bandwidthFee = AmountHelper::sunToDecimal(($bandwidthRequired + 1) * 1000);
-                $balanceAfter = $balanceAfter->sub($bandwidthFee);
+                $balanceAfter = $balanceAfter->minus($bandwidthFee);
             }
             else {
-                $bandwidthFee = new Decimal(0);
+                $bandwidthFee = BigDecimal::of(0);
                 $bandwidthAfter = $bandwidthBefore - $bandwidthRequired;
             }
         } catch (\Exception $e) {

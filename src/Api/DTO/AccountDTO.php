@@ -2,8 +2,7 @@
 
 namespace Mollsoft\LaravelTronModule\Api\DTO;
 
-
-use Decimal\Decimal;
+use Brick\Math\BigDecimal;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Date;
 use Mollsoft\LaravelTronModule\Api\Helpers\AmountHelper;
@@ -14,7 +13,7 @@ class AccountDTO
         public readonly string   $address,
         public readonly array    $data,
         public readonly bool     $activated,
-        public readonly ?Decimal $balance,
+        public readonly ?BigDecimal $balance,
         public readonly ?Carbon  $createTime,
         public readonly ?Carbon  $lastOperationTime,
     )
@@ -26,7 +25,7 @@ class AccountDTO
         return [
             'address' => $this->address,
             'activated' => $this->activated,
-            'balance' => $this->balance?->toString(),
+            'balance' => $this->balance?->__toString(),
             'createTime' => $this->createTime?->toDateTimeString(),
             'lastOperationTime' => $this->lastOperationTime?->toDateTimeString(),
         ];

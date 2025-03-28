@@ -2,7 +2,7 @@
 
 namespace Mollsoft\LaravelTronModule\Api\DTO;
 
-use Decimal\Decimal;
+use Brick\Math\BigDecimal;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Date;
 use Mollsoft\LaravelTronModule\Api\Helpers\AddressHelper;
@@ -18,7 +18,7 @@ class TransferDTO
         public readonly ?int     $blockNumber,
         public readonly string  $from,
         public readonly string  $to,
-        public readonly Decimal $value,
+        public readonly BigDecimal $value,
     )
     {
     }
@@ -32,7 +32,7 @@ class TransferDTO
             'blockNumber' => $this->blockNumber,
             'from' => $this->from,
             'to' => $this->to,
-            'value' => $this->value->toString(),
+            'value' => $this->value->__toString(),
         ];
     }
 

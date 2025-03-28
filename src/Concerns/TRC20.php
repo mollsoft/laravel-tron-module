@@ -2,7 +2,7 @@
 
 namespace Mollsoft\LaravelTronModule\Concerns;
 
-use Decimal\Decimal;
+use Brick\Math\BigDecimal;
 use Mollsoft\LaravelTronModule\Enums\TronModel;
 use Mollsoft\LaravelTronModule\Facades\Tron;
 use Mollsoft\LaravelTronModule\Models\TronAddress;
@@ -31,7 +31,7 @@ trait TRC20
         ]);
     }
 
-    public function getTRC20Balance(TronAddress|string $address, TronTRC20|string $trc20, ?TronNode $node = null): Decimal
+    public function getTRC20Balance(TronAddress|string $address, TronTRC20|string $trc20, ?TronNode $node = null): BigDecimal
     {
         if( !$node ) {
             $node = Tron::getNode();
