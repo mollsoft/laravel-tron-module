@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Mollsoft\LaravelTronModule\Casts\DecimalCast;
+use Mollsoft\LaravelTronModule\Casts\BigDecimalCast;
+use Mollsoft\LaravelTronModule\Casts\EncryptedCast;
 
 class TronWallet extends Model
 {
+    public ?string $plain_password = null;
+
     protected $fillable = [
         'node_id',
         'name',
@@ -35,10 +38,10 @@ class TronWallet extends Model
 
     protected $casts = [
         'password' => 'encrypted',
-        'mnemonic' => 'encrypted',
-        'seed' => 'encrypted',
+        'mnemonic' => EncryptedCast::class,
+        'seed' => EncryptedCast::class,
         'sync_at' => 'datetime',
-        'balance' => DecimalCast::class,
+        'balance' => BigDecimalCast::class,
         'trc20' => 'json',
     ];
 

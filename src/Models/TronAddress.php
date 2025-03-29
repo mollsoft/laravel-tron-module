@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Mollsoft\LaravelTronModule\Casts\DecimalCast;
-use Mollsoft\LaravelTronModule\Facades\Tron;
+use Mollsoft\LaravelTronModule\Casts\BigDecimalCast;
+use Mollsoft\LaravelTronModule\Casts\EncryptedCast;
 
 class TronAddress extends Model
 {
@@ -37,10 +37,11 @@ class TronAddress extends Model
     ];
 
     protected $casts = [
+        'private_key' => EncryptedCast::class,
         'watch_only' => 'boolean',
         'sync_at' => 'datetime',
         'activated' => 'boolean',
-        'balance' => DecimalCast::class,
+        'balance' => BigDecimalCast::class,
         'trc20' => 'json',
         'account' => 'json',
         'account_resources' => 'json',
@@ -79,5 +80,15 @@ class TronAddress extends Model
         $model = config('tron.models.deposit');
 
         return $this->hasMany($model, 'address_id');
+    }
+
+    public function getPlainPasswordAttribute(): ?string
+    {
+        return $this->wallet->plain_password;
+    }
+
+    public function getPasswordAttribute(): ?string
+    {
+        return $this->wallet->password;
     }
 }

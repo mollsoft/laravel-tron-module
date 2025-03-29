@@ -18,8 +18,12 @@ return new class extends Migration {
                 ->unique();
             $table->string('title')
                 ->nullable();
-            $table->text('mnemonic');
-            $table->text('seed');
+            $table->text('password')
+                ->nullable();
+            $table->text('mnemonic')
+                ->nullable();
+            $table->text('seed')
+                ->nullable();
             $table->timestamp('sync_at')
                 ->nullable();
             $table->decimal('balance', 20, 6)

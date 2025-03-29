@@ -9,8 +9,86 @@ use Mollsoft\LaravelTronModule\Models\TronWallet;
 
 trait Wallet
 {
+    public function importWallet(
+        string $name,
+        string|array $mnemonic,
+        ?string $passphrase = null,
+        ?string $password = null,
+        ?bool $savePassword = true,
+        ?TronNode $node = null,
+    ): TronWallet {
+        $seed = Tron::mnemonicSeed($mnemonic, $passphrase);
+
+        /** @var class-string<TronWallet> $walletModel */
+        $walletModel = Tron::getModel(TronModel::Wallet);
+
+        $wallet = new $walletModel([
+            'node_id' => $node?->id,
+            'name' => $name,
+        ]);
+        $wallet->plain_password = $password;
+        if( $savePassword ) {
+            $wallet->password = $password;
+        }
+        $wallet->mnemonic = implode(" ", $mnemonic);
+        $wallet->seed = $seed;
+
+        return $wallet;
+    }
+
+    public function generateWallet(
+        string $name,
+        ?int $mnemonicSize = 18,
+        ?string $passphrase = null,
+        ?string $password = null,
+        ?bool $savePassword = true,
+        ?TronNode $node = null,
+    ): TronWallet {
+        $mnemonic = Tron::mnemonicGenerate($mnemonicSize ?? 18);
+        $seed = Tron::mnemonicSeed($mnemonic, $passphrase);
+
+        /** @var class-string<TronWallet> $walletModel */
+        $walletModel = Tron::getModel(TronModel::Wallet);
+
+        $wallet = new $walletModel([
+            'node_id' => $node?->id,
+            'name' => $name,
+        ]);
+        $wallet->plain_password = $password;
+        if( $savePassword ) {
+            $wallet->password = $password;
+        }
+        $wallet->mnemonic = implode(" ", $mnemonic);
+        $wallet->seed = $seed;
+
+        return $wallet;
+    }
+
+    public function newWallet(
+        string $name,
+        ?string $password = null,
+        ?bool $savePassword = true,
+        ?TronNode $node = null,
+    ): TronWallet {
+        /** @var class-string<TronWallet> $walletModel */
+        $walletModel = Tron::getModel(TronModel::Wallet);
+
+        $wallet = new $walletModel([
+            'node_id' => $node?->id,
+            'name' => $name,
+        ]);
+        $wallet->plain_password = $password;
+        if( $savePassword ) {
+            $wallet->password = $password;
+        }
+
+        return $wallet;
+    }
+
     public function createWallet(
         string $name,
+        ?string $password = null,
+        ?bool $savePassword = true,
         string|array|int|null $mnemonic = null,
         ?string $passphrase = null,
         ?TronNode $node = null,
@@ -18,7 +96,7 @@ trait Wallet
         if (is_string($mnemonic)) {
             $mnemonic = explode(' ', $mnemonic);
         } elseif (is_null($mnemonic) || is_int($mnemonic)) {
-            $mnemonic = Tron::mnemonicGenerate($mnemonic);
+            $mnemonic = Tron::mnemonicGenerate($mnemonic ?? 18);
         }
 
         $seed = Tron::mnemonicSeed($mnemonic, $passphrase);
@@ -26,12 +104,17 @@ trait Wallet
         /** @var class-string<TronWallet> $walletModel */
         $walletModel = Tron::getModel(TronModel::Wallet);
 
-        $wallet = $walletModel::create([
+        $wallet = new $walletModel([
             'node_id' => $node?->id,
             'name' => $name,
-            'mnemonic' => implode(" ", $mnemonic),
-            'seed' => $seed,
         ]);
+        $wallet->plain_password = $password;
+        if( $savePassword ) {
+            $wallet->password = $password;
+        }
+        $wallet->mnemonic = implode(" ", $mnemonic);
+        $wallet->seed = $seed;
+        $wallet->save();
 
         Tron::createAddress($wallet, 'Primary Address', 0);
 

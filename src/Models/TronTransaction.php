@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Mollsoft\LaravelTronModule\Casts\DecimalCast;
+use Mollsoft\LaravelTronModule\Casts\BigDecimalCast;
 use Mollsoft\LaravelTronModule\Enums\TronTransactionType;
 
 class TronTransaction extends Model
@@ -34,7 +34,7 @@ class TronTransaction extends Model
     protected $casts = [
         'type' => TronTransactionType::class,
         'time_at' => 'datetime',
-        'amount' => DecimalCast::class,
+        'amount' => BigDecimalCast::class,
         'block_number' => 'integer',
         'debug_data' => 'json',
     ];

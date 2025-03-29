@@ -4,7 +4,7 @@ namespace Mollsoft\LaravelTronModule\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Mollsoft\LaravelTronModule\Casts\DecimalCast;
+use Mollsoft\LaravelTronModule\Casts\BigDecimalCast;
 
 class TronDeposit extends Model
 {
@@ -22,7 +22,7 @@ class TronDeposit extends Model
     ];
 
     protected $casts = [
-        'amount' => DecimalCast::class,
+        'amount' => BigDecimalCast::class,
         'block_height' => 'integer',
         'confirmations' => 'integer',
         'time_at' => 'datetime',
