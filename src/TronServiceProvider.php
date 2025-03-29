@@ -14,6 +14,7 @@ use Mollsoft\LaravelTronModule\Commands\WalletSyncCommand;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TronServiceProvider extends PackageServiceProvider
 {
@@ -49,5 +50,16 @@ class TronServiceProvider extends PackageServiceProvider
             });
 
         $this->app->singleton(Tron::class);
+    }
+
+    public function bootingPackage(): void
+    {
+        HasMany::macro('withParentWallet', function ($wallet) {
+            return $this->afterRetrieving(function ($addresses) use ($wallet) {
+                foreach ($addresses as $address) {
+                    $address->setRelation('wallet', $wallet);
+                }
+            });
+        });
     }
 }

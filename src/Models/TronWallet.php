@@ -55,7 +55,7 @@ class TronWallet extends Model
         /** @var class-string<TronAddress> $addressModel */
         $addressModel = config('tron.models.address');
 
-        return $this->hasMany($addressModel, 'wallet_id');
+        return $this->hasMany($addressModel, 'wallet_id')->withParentWallet($this);
     }
 
     protected function trc20Balances(): Attribute
