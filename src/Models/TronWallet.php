@@ -11,7 +11,7 @@ use Mollsoft\LaravelTronModule\Casts\EncryptedCast;
 
 class TronWallet extends Model
 {
-    public ?string $plain_password = null;
+    protected static array $plainPasswords = [];
 
     protected $fillable = [
         'node_id',
@@ -55,7 +55,7 @@ class TronWallet extends Model
         /** @var class-string<TronAddress> $addressModel */
         $addressModel = config('tron.models.address');
 
-        return $this->hasMany($addressModel, 'wallet_id')->withParentWallet($this);
+        return $this->hasMany($addressModel, 'wallet_id');
     }
 
     protected function trc20Balances(): Attribute
@@ -74,5 +74,15 @@ class TronWallet extends Model
         $model = config('tron.models.deposit');
 
         return $this->hasMany($model, 'wallet_id');
+    }
+
+    public function unlockWallet(?string $password): void
+    {
+        self::$plainPasswords[$this->name] = $password;
+    }
+
+    public function getPlainPasswordAttribute(): ?string
+    {
+        return self::$plainPasswords[$this->name] ?? null;
     }
 }

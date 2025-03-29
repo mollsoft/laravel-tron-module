@@ -26,7 +26,7 @@ trait Wallet
             'node_id' => $node?->id,
             'name' => $name,
         ]);
-        $wallet->plain_password = $password;
+        $wallet->unlockWallet($password);
         if( $savePassword ) {
             $wallet->password = $password;
         }
@@ -54,7 +54,7 @@ trait Wallet
             'node_id' => $node?->id,
             'name' => $name,
         ]);
-        $wallet->plain_password = $password;
+        $wallet->unlockWallet($password);
         if( $savePassword ) {
             $wallet->password = $password;
         }
@@ -77,7 +77,7 @@ trait Wallet
             'node_id' => $node?->id,
             'name' => $name,
         ]);
-        $wallet->plain_password = $password;
+        $wallet->unlockWallet($password);
         if( $savePassword ) {
             $wallet->password = $password;
         }
@@ -108,7 +108,7 @@ trait Wallet
             'node_id' => $node?->id,
             'name' => $name,
         ]);
-        $wallet->plain_password = $password;
+        $wallet->unlockWallet($password);
         if( $savePassword ) {
             $wallet->password = $password;
         }
