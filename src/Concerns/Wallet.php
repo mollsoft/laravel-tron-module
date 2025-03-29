@@ -17,6 +17,10 @@ trait Wallet
         ?bool $savePassword = true,
         ?TronNode $node = null,
     ): TronWallet {
+        if (is_array($mnemonic)) {
+            $mnemonic = implode(" ", $mnemonic);
+        }
+
         $seed = Tron::mnemonicSeed($mnemonic, $passphrase);
 
         /** @var class-string<TronWallet> $walletModel */
@@ -27,10 +31,10 @@ trait Wallet
             'name' => $name,
         ]);
         $wallet->unlockWallet($password);
-        if( $savePassword ) {
+        if ($savePassword) {
             $wallet->password = $password;
         }
-        $wallet->mnemonic = implode(" ", $mnemonic);
+        $wallet->mnemonic = $mnemonic;
         $wallet->seed = $seed;
 
         return $wallet;
@@ -55,7 +59,7 @@ trait Wallet
             'name' => $name,
         ]);
         $wallet->unlockWallet($password);
-        if( $savePassword ) {
+        if ($savePassword) {
             $wallet->password = $password;
         }
         $wallet->mnemonic = implode(" ", $mnemonic);
@@ -78,7 +82,7 @@ trait Wallet
             'name' => $name,
         ]);
         $wallet->unlockWallet($password);
-        if( $savePassword ) {
+        if ($savePassword) {
             $wallet->password = $password;
         }
 
@@ -109,7 +113,7 @@ trait Wallet
             'name' => $name,
         ]);
         $wallet->unlockWallet($password);
-        if( $savePassword ) {
+        if ($savePassword) {
             $wallet->password = $password;
         }
         $wallet->mnemonic = implode(" ", $mnemonic);
