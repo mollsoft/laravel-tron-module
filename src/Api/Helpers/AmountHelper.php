@@ -11,11 +11,11 @@ class AmountHelper
     {
         $value = BigDecimal::of($value);
 
-        return $decimals ? $value : $value->dividedBy(
+        return $decimals ? $value->dividedBy(
             BigDecimal::of(10)->power($decimals),
             $decimals,
             RoundingMode::DOWN
-        );
+        ) : $value;
     }
 
     public static function sunToDecimal(string|int|float|BigDecimal $value): BigDecimal
