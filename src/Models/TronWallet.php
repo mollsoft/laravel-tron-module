@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Mollsoft\LaravelTronModule\Casts\BigDecimalCast;
 use Mollsoft\LaravelTronModule\Casts\EncryptedCast;
 
@@ -56,6 +57,24 @@ class TronWallet extends Model
         $addressModel = config('tron.models.address');
 
         return $this->hasMany($addressModel, 'wallet_id');
+    }
+
+    public function transactions(): HasManyThrough
+    {
+        /** @var class-string<TronTransaction> $transactionModel */
+        $transactionModel = config('tron.models.transaction');
+
+        /** @var class-string<TronAddress> $addressModel */
+        $addressModel = config('tron.models.address');
+
+        return $this->hasManyThrough(
+            $transactionModel,
+            $addressModel,
+            'wallet_id',
+            'address',
+            'id',
+            'address'
+        );
     }
 
     protected function trc20Balances(): Attribute
