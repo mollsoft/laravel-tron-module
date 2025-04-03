@@ -64,14 +64,20 @@ trait Transfer
             ->send($from->private_key);
     }
 
-    public function transferTRC20(TronTRC20 $trc20, TronAddress $from, string $to, BigDecimal|float|int|string $amount): TRC20TransferSendDTO
+    public function transferTRC20(
+        TronTRC20 $trc20,
+        TronAddress $from,
+        string $to,
+        BigDecimal|float|int|string $amount,
+        string|int|float|BigDecimal $feeLimit = 30,
+    ): TRC20TransferSendDTO
     {
         $node = $from->wallet->node ?? Tron::getNode();
         $node->increment('requests', 6);
 
         return $node
             ->api()
-            ->transferTRC20($trc20->address, $from->address, $to, $amount)
+            ->transferTRC20($trc20->address, $from->address, $to, $amount, $feeLimit)
             ->send($from->private_key);
     }
 
@@ -84,6 +90,7 @@ trait Transfer
         BigDecimal|float|int|string|null $tokenBalance = null,
         ?int $bandwidth = null,
         ?int $energy = null,
+        string|int|float|BigDecimal $feeLimit = 30,
     ): TRC20TransferPreviewDTO
     {
         $node = $from->wallet->node ?? Tron::getNode();
@@ -91,18 +98,23 @@ trait Transfer
 
         return $node
             ->api()
-            ->transferTRC20($trc20->address, $from->address, $to, $amount)
+            ->transferTRC20($trc20->address, $from->address, $to, $amount, $feeLimit)
             ->preview($balance, $tokenBalance, $bandwidth, $energy);
     }
 
-    public function transferTRC20All(TronTRC20 $trc20, TronAddress $from, string $to): TRC20TransferSendDTO
+    public function transferTRC20All(
+        TronTRC20 $trc20,
+        TronAddress $from,
+        string $to,
+        string|int|float|BigDecimal $feeLimit = 30
+    ): TRC20TransferSendDTO
     {
         $node = $from->wallet->node ?? Tron::getNode();
         $node->increment('requests', 5);
 
         $preview = $node
             ->api()
-            ->transferTRC20($trc20->address, $from->address, $to, 1)
+            ->transferTRC20($trc20->address, $from->address, $to, 1, $feeLimit)
             ->preview();
         if ($preview->hasError()) {
             throw new \Exception($preview->error);
@@ -112,7 +124,7 @@ trait Transfer
 
         return $node
             ->api()
-            ->transferTRC20($trc20->address, $from->address, $to, $preview->tokenBefore)
+            ->transferTRC20($trc20->address, $from->address, $to, $preview->tokenBefore, $feeLimit)
             ->send($from->private_key);
     }
 }
