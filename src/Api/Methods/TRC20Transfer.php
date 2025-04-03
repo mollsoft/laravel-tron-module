@@ -25,7 +25,12 @@ class TRC20Transfer
     {
     }
 
-    public function preview(): TRC20TransferPreviewDTO
+    public function preview(
+        BigDecimal|float|int|string|null $balance = null,
+        BigDecimal|float|int|string|null $tokenBalance = null,
+        ?int $bandwidth = null,
+        ?int $energy = null,
+    ): TRC20TransferPreviewDTO
     {
         if ($this->preview !== null) {
             return $this->preview;
@@ -35,20 +40,20 @@ class TRC20Transfer
         $from = null;
         $fromResources = null;
         $to = null;
-        $balanceBefore = null;
+        $balanceBefore = $balance !== null ? BigDecimal::of($balance) : null;
         $balanceAfter = null;
-        $tokenBefore = null;
+        $tokenBefore = $tokenBalance !== null ? BigDecimal::of($tokenBalance) : null;
         $tokenAfter = null;
         $activated = null;
         $energyDebug = null;
         $energyRequired = null;
-        $energyBefore = null;
+        $energyBefore = $energy;
         $energyAfter = null;
         $energyInsufficient = null;
         $energyFee = null;
         $bandwidthDebug = null;
         $bandwidthRequired = null;
-        $bandwidthBefore = null;
+        $bandwidthBefore = $bandwidth;
         $bandwidthAfter = null;
         $bandwidthInsufficient = null;
         $bandwidthFee = null;
@@ -63,10 +68,14 @@ class TRC20Transfer
                 throw new \Exception('From Address is not activated');
             }
 
-            $balanceBefore = $from->balance;
+            if( $balanceBefore === null ) {
+                $balanceBefore = $from->balance;
+            }
             $balanceAfter = clone $balanceBefore;
 
-            $tokenBefore = $this->contract->balanceOf($this->from);
+            if( $tokenBefore === null ) {
+                $tokenBefore = $this->contract->balanceOf($this->from);
+            }
             $tokenAfter = $tokenBefore->minus($this->amount);
 
             if ($tokenAfter->isNegative()) {
@@ -82,7 +91,9 @@ class TRC20Transfer
 
             $energyDebug = $data;
             $energyRequired = $data['energy_used'];
-            $energyBefore = $fromResources->energyAvailable;
+            if( $energyBefore === null ) {
+                $energyBefore = $fromResources->energyAvailable;
+            }
             if ($energyRequired > $energyBefore) {
                 $energyAfter = $energyBefore;
                 $energyInsufficient = $energyRequired - $energyBefore;
@@ -100,7 +111,9 @@ class TRC20Transfer
 
             $bandwidthDebug = $data;
             $bandwidthRequired = strlen($data['transaction']['raw_data_hex']) + 1;
-            $bandwidthBefore = $fromResources->bandwidthAvailable;
+            if( $bandwidthBefore === null ) {
+                $bandwidthBefore = $fromResources->bandwidthAvailable;
+            }
             if ($bandwidthRequired > $bandwidthBefore) {
                 $bandwidthInsufficient = $bandwidthRequired;
                 $bandwidthAfter = $bandwidthBefore;

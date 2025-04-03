@@ -22,7 +22,10 @@ class Transfer
     {
     }
 
-    public function preview(): TransferPreviewDTO
+    public function preview(
+        BigDecimal|float|int|string|null $balance = null,
+        ?int $bandwidth = null
+    ): TransferPreviewDTO
     {
         if( $this->preview !== null ) {
             return $this->preview;
@@ -32,12 +35,12 @@ class Transfer
         $from = null;
         $fromResources = null;
         $to = null;
-        $balanceBefore = null;
+        $balanceBefore = $balance !== null ? BigDecimal::of($balance) : null;
         $balanceAfter = null;
         $activateFee = null;
         $transaction = null;
         $bandwidthRequired = null;
-        $bandwidthBefore = null;
+        $bandwidthBefore = $bandwidth;
         $bandwidthAfter = null;
         $bandwidthFee = null;
 
@@ -50,7 +53,9 @@ class Transfer
                 throw new \Exception('From Address is not activated');
             }
 
-            $balanceBefore = $from->balance;
+            if( $balanceBefore === null ) {
+                $balanceBefore = $from->balance;
+            }
             $balanceAfter = $balanceBefore->minus($this->amount);
 
             if (!$to->activated) {
@@ -68,10 +73,13 @@ class Transfer
             ]);
 
             $bandwidthRequired = $to->activated ? strlen($transaction['raw_data_hex']) + 1 : 0;
-            $bandwidthBefore = $fromResources->bandwidthAvailable;
+            if( $bandwidthBefore === null ) {
+                $bandwidthBefore = $fromResources->bandwidthAvailable;
+            }
             if( $bandwidthRequired > $bandwidthBefore ) {
                 $bandwidthFee = AmountHelper::sunToDecimal(($bandwidthRequired + 1) * 1000);
                 $balanceAfter = $balanceAfter->minus($bandwidthFee);
+                $bandwidthAfter = 0;
             }
             else {
                 $bandwidthFee = BigDecimal::of(0);

@@ -62,7 +62,7 @@ class TronAddress extends Model
             get: fn () => TronTRC20::get()->map(fn (TronTRC20 $trc20) => [
                 ...$trc20->only(['address', 'name', 'symbol', 'decimals']),
                 'balance' => $this->trc20[$trc20->address] ?? null,
-            ])
+            ])->keyBy('address')
         );
     }
 

@@ -13,7 +13,13 @@ use Mollsoft\LaravelTronModule\Models\TronTRC20;
 
 trait Transfer
 {
-    public function previewTransfer(TronAddress $from, string $to, BigDecimal|float|int|string $amount): TransferPreviewDTO
+    public function previewTransfer(
+        TronAddress $from,
+        string $to,
+        BigDecimal|float|int|string $amount,
+        BigDecimal|float|int|string|null $balance = null,
+        ?int $bandwidth = null
+    ): TransferPreviewDTO
     {
         $node = $from->wallet->node ?? Tron::getNode();
         $node->increment('requests', 4);
@@ -21,7 +27,7 @@ trait Transfer
         return $node
             ->api()
             ->transfer($from->address, $to, $amount)
-            ->preview();
+            ->preview($balance, $bandwidth);
     }
 
     public function transfer(TronAddress $from, string $to, BigDecimal|float|int|string $amount): TransferSendDTO
@@ -69,7 +75,16 @@ trait Transfer
             ->send($from->private_key);
     }
 
-    public function previewTransferTRC20(TronTRC20 $trc20, TronAddress $from, string $to, BigDecimal|float|int|string $amount): TRC20TransferPreviewDTO
+    public function previewTransferTRC20(
+        TronTRC20 $trc20,
+        TronAddress $from,
+        string $to,
+        BigDecimal|float|int|string $amount,
+        BigDecimal|float|int|string|null $balance = null,
+        BigDecimal|float|int|string|null $tokenBalance = null,
+        ?int $bandwidth = null,
+        ?int $energy = null,
+    ): TRC20TransferPreviewDTO
     {
         $node = $from->wallet->node ?? Tron::getNode();
         $node->increment('requests', 5);
@@ -77,7 +92,7 @@ trait Transfer
         return $node
             ->api()
             ->transferTRC20($trc20->address, $from->address, $to, $amount)
-            ->preview();
+            ->preview($balance, $tokenBalance, $bandwidth, $energy);
     }
 
     public function transferTRC20All(TronTRC20 $trc20, TronAddress $from, string $to): TRC20TransferSendDTO
