@@ -20,7 +20,7 @@
     "ext-ctype": "*",
     "illuminate/contracts": "^10.0|^11.0|^12.0",
     "spatie/laravel-package-tools": "^1.15",
-    "furqansiddiqui/bip39-mnemonic-php": "^0.1.7",
+    "furqansiddiqui/bip39-mnemonic-php": "^0.2.1",
     "minter/minter-php-bip-44": "^1.2",
     "web3p/web3.php": "^0.1.6",
     "kornrunner/secp256k1": "^0.2.0",

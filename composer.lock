@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eb141b89caddb70e0c779fbed18eaa36",
+    "content-hash": "e8cfdc602ae7b34a6c04ffceaf60cca8",
     "packages": [
         {
             "name": "brick/math",
-            "version": "0.13.0",
+            "version": "0.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brick/math.git",
-                "reference": "efe64d2cd94d410ba85831a6d4c16ac48542751b"
+                "reference": "fc7ed316430118cc7836bf45faff18d5dfc8de04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brick/math/zipball/efe64d2cd94d410ba85831a6d4c16ac48542751b",
-                "reference": "efe64d2cd94d410ba85831a6d4c16ac48542751b",
+                "url": "https://api.github.com/repos/brick/math/zipball/fc7ed316430118cc7836bf45faff18d5dfc8de04",
+                "reference": "fc7ed316430118cc7836bf45faff18d5dfc8de04",
                 "shasum": ""
             },
             "require": {
@@ -56,7 +56,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brick/math/issues",
-                "source": "https://github.com/brick/math/tree/0.13.0"
+                "source": "https://github.com/brick/math/tree/0.13.1"
             },
             "funding": [
                 {
@@ -64,7 +64,100 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-03T13:19:29+00:00"
+            "time": "2025-03-29T13:50:30+00:00"
+        },
+        {
+            "name": "charcoal-dev/buffers",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/charcoal-dev/buffers.git",
+                "reference": "3ff43a0bf1df3297d0d0dc2df68a2429306d006a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/charcoal-dev/buffers/zipball/3ff43a0bf1df3297d0d0dc2df68a2429306d006a",
+                "reference": "3ff43a0bf1df3297d0d0dc2df68a2429306d006a",
+                "shasum": ""
+            },
+            "require": {
+                "charcoal-dev/gmp-adapter": "^0.0.1",
+                "ext-gmp": "*",
+                "php": "^8.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Charcoal\\Buffers\\": [
+                        "src"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Furqan A. Siddiqui",
+                    "email": "hello@furqansiddiqui.com",
+                    "homepage": "https://www.furqansiddiqui.com",
+                    "role": "Author"
+                }
+            ],
+            "description": "Byte Array Buffers for Charcoal PHP Apps",
+            "homepage": "https://github.com/charcoal-dev/buffers",
+            "support": {
+                "issues": "https://github.com/charcoal-dev/buffers/issues",
+                "source": "https://github.com/charcoal-dev/buffers/tree/0.1.0"
+            },
+            "time": "2024-08-04T12:41:41+00:00"
+        },
+        {
+            "name": "charcoal-dev/gmp-adapter",
+            "version": "0.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/charcoal-dev/gmp-adapter.git",
+                "reference": "35f72a52eb3c9f9cc1eace85431a1c4467f5dfd8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/charcoal-dev/gmp-adapter/zipball/35f72a52eb3c9f9cc1eace85431a1c4467f5dfd8",
+                "reference": "35f72a52eb3c9f9cc1eace85431a1c4467f5dfd8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gmp": "*",
+                "php": "^8.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Charcoal\\Adapters\\GMP\\": [
+                        "src"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Furqan A. Siddiqui",
+                    "email": "hello@furqansiddiqui.com",
+                    "homepage": "https://www.furqansiddiqui.com",
+                    "role": "Author"
+                }
+            ],
+            "description": "Provides BigInteger class to Charcoal Apps",
+            "homepage": "https://github.com/charcoal-dev/gmp-adapter",
+            "support": {
+                "issues": "https://github.com/charcoal-dev/gmp-adapter/issues",
+                "source": "https://github.com/charcoal-dev/gmp-adapter/tree/0.0.1"
+            },
+            "time": "2023-08-11T11:54:13+00:00"
         },
         {
             "name": "fgrosse/phpasn1",
@@ -144,21 +237,22 @@
         },
         {
             "name": "furqansiddiqui/bip39-mnemonic-php",
-            "version": "0.1.7",
+            "version": "0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/furqansiddiqui/bip39-mnemonic-php.git",
-                "reference": "673d19ef6b771dd69810df86d607e10cd41641e9"
+                "reference": "959737534d36acc63aa4f2c2dc7fdab3e0246b91"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/furqansiddiqui/bip39-mnemonic-php/zipball/673d19ef6b771dd69810df86d607e10cd41641e9",
-                "reference": "673d19ef6b771dd69810df86d607e10cd41641e9",
+                "url": "https://api.github.com/repos/furqansiddiqui/bip39-mnemonic-php/zipball/959737534d36acc63aa4f2c2dc7fdab3e0246b91",
+                "reference": "959737534d36acc63aa4f2c2dc7fdab3e0246b91",
                 "shasum": ""
             },
             "require": {
+                "charcoal-dev/buffers": "^0.1.0",
                 "ext-mbstring": "*",
-                "php-64bit": "^8.1"
+                "php-64bit": "^8.2"
             },
             "type": "library",
             "autoload": {
@@ -180,9 +274,9 @@
             ],
             "support": {
                 "issues": "https://github.com/furqansiddiqui/bip39-mnemonic-php/issues",
-                "source": "https://github.com/furqansiddiqui/bip39-mnemonic-php/tree/0.1.7"
+                "source": "https://github.com/furqansiddiqui/bip39-mnemonic-php/tree/0.2.1"
             },
-            "time": "2023-02-13T13:54:02+00:00"
+            "time": "2024-08-04T14:24:32+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -511,16 +605,16 @@
         },
         {
             "name": "illuminate/contracts",
-            "version": "v12.3.0",
+            "version": "v12.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
-                "reference": "88962e0a73fb837e048ebdbbc67afd2f6b30e8e6"
+                "reference": "bbaec083da240396f2186f4c3a9952da207f28a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/contracts/zipball/88962e0a73fb837e048ebdbbc67afd2f6b30e8e6",
-                "reference": "88962e0a73fb837e048ebdbbc67afd2f6b30e8e6",
+                "url": "https://api.github.com/repos/illuminate/contracts/zipball/bbaec083da240396f2186f4c3a9952da207f28a0",
+                "reference": "bbaec083da240396f2186f4c3a9952da207f28a0",
                 "shasum": ""
             },
             "require": {
@@ -555,7 +649,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2025-03-16T23:56:53+00:00"
+            "time": "2025-03-19T20:10:05+00:00"
         },
         {
             "name": "kornrunner/keccak",
