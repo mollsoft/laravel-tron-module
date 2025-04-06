@@ -3,12 +3,16 @@
 namespace Mollsoft\LaravelTronModule\Concerns;
 
 use FurqanSiddiqui\BIP39\BIP39;
+use FurqanSiddiqui\BIP39\Language\English;
 
 trait Mnemonic
 {
     public function mnemonicGenerate(int $wordCount = 15): array
     {
-        $mnemonic = BIP39::Generate($wordCount);
+        $mnemonic = BIP39::fromRandom(
+            wordList: English::getInstance(),
+            wordCount: $wordCount
+        );
 
         return $mnemonic->words;
     }
@@ -20,7 +24,10 @@ trait Mnemonic
         }
 
         try {
-            BIP39::Words($mnemonic);
+            BIP39::fromWords(
+                words: $mnemonic,
+                wordList: English::getInstance()
+            );
         } catch (\Exception) {
             return false;
         }
@@ -34,7 +41,11 @@ trait Mnemonic
             $mnemonic = explode(' ', $mnemonic);
         }
 
-        $mnemonic = BIP39::Words($mnemonic);
+        $mnemonic = BIP39::fromWords(
+            words: $mnemonic,
+            wordList: English::getInstance()
+        );
+
         return bin2hex($mnemonic->generateSeed((string)$passphrase));
     }
 }
