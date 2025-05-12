@@ -2,7 +2,6 @@
 
 namespace Mollsoft\LaravelTronModule\Api;
 
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Mollsoft\LaravelTronModule\Api\Enums\HttpMethod;
@@ -15,7 +14,8 @@ class HttpProvider
         protected readonly ?string $user = null,
         protected readonly ?string $password = null,
         public readonly int        $timeout = 30000,
-        protected string           $statusPage = '/'
+        protected string           $statusPage = '/',
+        protected readonly ?string $proxy = null
     )
     {
     }
@@ -49,7 +49,8 @@ class HttpProvider
             ->withOptions([
                 'base_uri' => $this->baseUri,
                 'timeout' => $this->timeout,
-                'auth' => $this->user && [$this->user, $this->password]
+                'auth' => $this->user && [$this->user, $this->password],
+                'proxy' => $this->formatProxy($this->proxy),
             ])
             ->withHeaders($this->headers);
 
@@ -85,5 +86,38 @@ class HttpProvider
         }
 
         return $decodedBody;
+    }
+
+    protected function formatProxy(?string $proxy): ?string
+    {
+        if (!$proxy) {
+            return null;
+        }
+
+        // Проверяем формат прокси (добавляем поддержку логина и пароля)
+        if (preg_match('/^(socks4|socks5|https?|http):\/\/(([^:]+):([^@]+)@)?([^:\/]+)(:\d+)?$/', $proxy, $matches)) {
+            $protocol = $matches[1];
+            $username = $matches[3] ?? null;
+            $password = $matches[4] ?? null;
+            $host = $matches[5];
+            $port = $matches[6] ?? '';
+
+            // Поддержка socks4 и socks5 (с аутентификацией или без)
+            if (in_array($protocol, ['socks4', 'socks5'])) {
+                if ($username && $password) {
+                    return "{$protocol}://{$username}:{$password}@{$host}{$port}";
+                }
+                return "{$protocol}://{$host}{$port}";
+            }
+
+            // Поддержка http, https
+            if ($username && $password) {
+                return "{$protocol}://{$username}:{$password}@{$host}{$port}";
+            }
+
+            return "{$protocol}://{$host}{$port}";
+        }
+
+        throw new \InvalidArgumentException('Invalid proxy format. Supported formats: socks4|socks5|http|https.');
     }
 }

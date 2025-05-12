@@ -50,14 +50,16 @@ class TronNode extends Model
                 baseUri: $this->full_node['url'],
                 headers: $this->full_node['headers'] ?? [],
                 user: $this->full_node['username'] ?? null,
-                password: $this->full_node['password'] ?? null
+                password: $this->full_node['password'] ?? null,
+                proxy: $this->full_node['proxy'] ?? null,
             );
 
             $solidityNode = new HttpProvider(
                 baseUri: $this->solidity_node['url'],
                 headers: $this->solidity_node['headers'] ?? [],
                 user: $this->solidity_node['username'] ?? null,
-                password: $this->solidity_node['password'] ?? null
+                password: $this->solidity_node['password'] ?? null,
+                proxy: $this->solidity_node['proxy'] ?? null,
             );
 
             /** @var class-string<Api> $model */

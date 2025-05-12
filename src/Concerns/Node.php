@@ -40,7 +40,7 @@ trait Node
         return $node;
     }
 
-    public function createTronGridNode(string $apiKey, string $name, ?string $title = null): TronNode
+    public function createTronGridNode(string $apiKey, string $name, ?string $title = null, ?string $proxy = null): TronNode
     {
         /** @var class-string<TronNode> $nodeModel */
         $nodeModel = Tron::getModel(TronModel::Node);
@@ -57,13 +57,15 @@ trait Node
                 'url' => 'https://api.trongrid.io',
                 'headers' => [
                     'TRON-PRO-API-KEY' => $apiKey,
-                ]
+                ],
+                'proxy' => $proxy,
             ],
             'solidity_node' => [
                 'url' => 'https://api.trongrid.io',
                 'headers' => [
                     'TRON-PRO-API-KEY' => $apiKey,
-                ]
+                ],
+                'proxy' => $proxy,
             ],
             'requests' => 1,
             'worked' => true,
