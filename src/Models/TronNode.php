@@ -23,6 +23,7 @@ class TronNode extends Model
         'requests_at',
         'sync_at',
         'worked',
+        'available',
     ];
 
     protected $casts = [
@@ -33,6 +34,7 @@ class TronNode extends Model
         'requests_at' => 'date',
         'sync_at' => 'datetime',
         'worked' => 'boolean',
+        'available' => 'boolean',
     ];
 
     public function wallets(): HasMany

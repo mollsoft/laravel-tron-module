@@ -26,6 +26,7 @@ trait Node
             'solidity_node' => $solidityNode,
             'requests' => 1,
             'worked' => true,
+            'available' => true,
         ]);
 
         $getBlock = $node->api()->manager->request('wallet/getblock');
@@ -69,6 +70,7 @@ trait Node
             ],
             'requests' => 1,
             'worked' => true,
+            'available' => true,
         ]);
 
         $getBlock = $node->api()->manager->request('wallet/getblock');

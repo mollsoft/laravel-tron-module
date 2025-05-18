@@ -24,6 +24,8 @@ return new class extends Migration {
                 ->nullable();
             $table->boolean('worked')
                 ->default(true);
+            $table->boolean('available')
+                ->default(true);
         });
     }
 
