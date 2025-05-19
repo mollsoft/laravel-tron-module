@@ -48,6 +48,11 @@ class AddressSync extends BaseSync
     {
         parent::run();
 
+        if( !$this->address->available ) {
+            $this->log('No synchronization required, the address has not been available!', 'success');
+            return;
+        }
+
         if (
             ($this->touchConfig['enabled'] ?? false)
             &&

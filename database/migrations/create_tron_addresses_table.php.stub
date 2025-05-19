@@ -36,6 +36,8 @@ return new class extends Migration {
                 ->nullable();
             $table->timestamp('touch_at')
                 ->nullable();
+            $table->boolean('available')
+                ->default(true);
             $table->timestamps();
 
             $table->unique(['wallet_id', 'index']);

@@ -25,7 +25,12 @@ class WalletSync extends BaseSync
 
     protected function syncAddresses(): self
     {
-        foreach ($this->wallet->addresses as $address) {
+        $addresses = $this->wallet
+            ->addresses()
+            ->where('available', true)
+            ->get();
+
+        foreach ($addresses as $address) {
             $this->log('- Started sync address '.$address->address.'...');
 
             $service = App::make(AddressSync::class, [
@@ -47,7 +52,11 @@ class WalletSync extends BaseSync
         $balance = BigDecimal::of('0');
         $trc20 = [];
 
-        foreach ($this->wallet->addresses as $address) {
+        $addresses = $this->wallet
+            ->addresses()
+            ->where('available', true)
+            ->get();
+        foreach ($addresses as $address) {
             $balance = $balance->plus(($address->balance ?: 0));
             foreach ($address->trc20 as $k => $v) {
                 $current = BigDecimal::of($trc20[$k] ?? 0);
