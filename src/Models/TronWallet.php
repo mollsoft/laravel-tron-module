@@ -37,6 +37,7 @@ class TronWallet extends Model
         'trc20_balances',
         'has_password',
         'has_mnemonic',
+        'has_seed',
     ];
 
     protected $casts = [
@@ -115,5 +116,10 @@ class TronWallet extends Model
     public function getHasMnemonicAttribute(): bool
     {
         return !!$this->mnemonic;
+    }
+
+    public function getHasSeedAttribute(): bool
+    {
+        return !!$this->seed;
     }
 }
