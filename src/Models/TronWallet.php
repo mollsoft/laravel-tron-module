@@ -34,7 +34,9 @@ class TronWallet extends Model
     ];
 
     protected $appends = [
-        'trc20_balances'
+        'trc20_balances',
+        'has_password',
+        'has_mnemonic',
     ];
 
     protected $casts = [
@@ -103,5 +105,15 @@ class TronWallet extends Model
     public function getPlainPasswordAttribute(): ?string
     {
         return self::$plainPasswords[$this->name] ?? null;
+    }
+
+    public function getHasPasswordAttribute(): bool
+    {
+        return !!$this->password;
+    }
+
+    public function getHasMnemonicAttribute(): bool
+    {
+        return !!$this->mnemonic;
     }
 }
